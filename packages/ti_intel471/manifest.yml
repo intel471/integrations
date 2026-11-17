@@ -15,10 +15,15 @@ conditions:
   elastic:
     subscription: basic
 icons:
-  - src: /img/intel471-logo.svg
+  - src: /img/intel471-owl.svg
     title: Intel 471 logo
-    size: 339x104
+    size: 70x104
     type: image/svg+xml
+  - src: /img/intel471-owl-dark.svg
+    title: Intel 471 logo
+    size: 70x104
+    type: image/svg+xml
+    dark_mode: true
 policy_templates:
   - name: intel471
     title: Intel 471
@@ -80,5 +85,5 @@ policy_templates:
               #    ...
               #    -----END CERTIFICATE-----
 owner:
-  github: intel471/integrations
-  type: partner
+  github: elastic/security-service-integrations
+  type: community
