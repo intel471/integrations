@@ -61,28 +61,18 @@ Review the regenerated `*-expected.json` diffs before committing.
 Bump `version` in `manifest.yml`, add a `changelog.yml` entry, then
 `python3 _dev/scripts/check_package.py --fix` to update the User-Agent.
 
-## Findings not yet in the package docs
+## Notes behind the package docs
 
-To add to `_dev/build/docs/README.md` ("How collection works" /
-"Troubleshooting"):
+The cursor handling in "How collection works" and "Troubleshooting"
+(`_dev/build/docs/README.md`) was verified on a local 8.19.0 stack:
 
-- **Disabling the input resets the stream.** The cursor lives in the agent's
-  Filebeat registry (`<agent data>/run/cel-default/registry/filebeat/`), not in
-  Elasticsearch. Disabling the input in Fleet, when it is the only CEL input on
-  the agent, stops the `cel-default` component and the agent deletes its run
-  directory, registry included. Re-enabling starts again from
-  *now - Initial Interval*, so indicators that changed while it was off are
-  missed. Removing/re-adding the integration or changing the URL or a filter has
-  the same effect.
-  Tested 2026-11-16 on 8.19.0: disabled at 15:32 UTC, directory gone within 90s;
-  re-enabled 16:16, new `from` = 16:11:29 (Initial Interval 5m).
-- **Recovering a gap:** before re-enabling, raise Initial Interval to cover the
-  pause; already-indexed indicators are rejected as duplicates (`_id` is a hash
-  of the raw indicator), so only the missed ones are added.
-- **Pausing without losing the cursor:** stop the agent (service or container)
-  instead of disabling the input; the registry survives agent restarts
-  (confirmed 2026-11-17 after a stack stop/start).
+- Disabling the input, when it is the only CEL input on the agent, stops the
+  `cel-default` component and the agent deletes its run directory, registry
+  (`<agent data>/run/cel-default/registry/filebeat/`) included. Tested
+  2026-11-16: disabled at 15:32 UTC, directory gone within 90s; re-enabled
+  16:16, new `from` = 16:11:29 (Initial Interval 5m).
+- The registry survives an agent restart (confirmed 2026-11-17 after a stack
+  stop/start).
+- The registry key is `cel::<input id>::<url>`, so changing the URL starts over.
 - **Untested:** whether the registry's 30-minute TTL drops the cursor when the
   input is disabled but another CEL integration keeps `cel-default` running.
-- **Discover:** `@timestamp` is the indicator's last_seen, not the ingest time,
-  so short time-picker windows show nothing; filter on `event.ingested`.

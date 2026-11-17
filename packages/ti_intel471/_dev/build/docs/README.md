@@ -54,6 +54,12 @@ The integration follows the API stream with an opaque cursor:
 - Changing a filter discards the cursor and starts the stream again from
   *now − Initial Interval*. Changing only the Initial Interval has no effect once
   the first run has happened.
+- The cursor is kept on the agent (in its Filebeat registry), not in
+  Elasticsearch. It survives agent restarts, but **disabling the integration's
+  input in Fleet discards it**, as do changing the API URL and removing and
+  re-adding the integration. Collection then starts again from
+  *now − Initial Interval*, and indicators that changed in between are missed
+  (see Troubleshooting).
 - Requests are retried with backoff on HTTP 429 and 5xx. Other errors, or retries
   running out, are reported as `error.message` documents and the cursor is left
   unchanged, so the next interval tries the same request again.
@@ -90,6 +96,14 @@ days (data stream lifecycle); the latest index holds the current state.
   last **Initial Interval**, and that start point is fixed once collection has
   begun. To backfill further, remove the integration and add it again with a
   larger Initial Interval; the new integration starts with a fresh cursor.
+- Indicators missing after the input was disabled and re-enabled: re-enabling
+  starts from *now − Initial Interval*. Before re-enabling, raise the Initial
+  Interval to cover the pause; indicators that are already indexed are rejected
+  as duplicates, so only the missed ones are added. To pause collection without
+  losing the cursor, stop the agent instead of disabling the input.
+- Nothing in Discover for recent runs: `@timestamp` is the indicator's last seen
+  time, not when it was ingested, so a short time range can be empty. Filter on
+  `event.ingested` instead.
 - Enable **request tracing** temporarily to log requests and responses on the agent.
 
 ## Logs reference
