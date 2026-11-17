@@ -258,11 +258,15 @@ processors:
         - '^AS%{ASN:threat.indicator.as.number:long}(?:\s+%{GREEDYDATA:threat.indicator.as.organization.name})?$'
       ignore_missing: true
       if: ctx.intel471.indicator.data?.ipv4?.geo_ip?.isp?.autonomous_system != null
+      # A malformed ASN must not turn the indicator into an error document:
+      # those are excluded from the latest IOC index. The raw value stays in
+      # intel471.indicator.data.ipv4.geo_ip.isp.autonomous_system.
       on_failure:
         - append:
-            tag: append_error_grok_as_0e2a4c6d
-            field: error.message
-            value: 'Unrecognised autonomous_system value: {{{intel471.indicator.data.ipv4.geo_ip.isp.autonomous_system}}}'
+            tag: append_tag_grok_as_0e2a4c6d
+            field: tags
+            value: intel471_asn_unparsed
+            allow_duplicates: false
 
   # file
   - set:

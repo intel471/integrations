@@ -3,8 +3,9 @@
 Reads indicators_fixtures.json (produced by get_indicators_fixture.py, values
 already redacted) and writes:
 
-  * pipeline test inputs, one file per indicator type, plus two synthetic edge
-    cases (revoked; no expiration_ts so the fallback expiry applies)
+  * pipeline test inputs, one file per indicator type, plus synthetic edge
+    cases (revoked in several shapes; no expiration_ts so the fallback expiry
+    applies; an ASN string the pipeline can't parse)
   * the mock Indicators API config used by the system test: three pages served
     with cursor_next chaining, the last one short so the stream drains
 
@@ -59,6 +60,13 @@ def pipeline_tests(indicators: list[dict]) -> None:
     no_expiry = copy.deepcopy(base)
     no_expiry.pop("expiration_ts", None)
     write_events("no-expiration-ts", [no_expiry])
+
+    # An ASN string the grok can't parse: tagged, but not an error document,
+    # so the indicator still reaches the latest IOC index.
+    ipv4 = next(i for i in indicators if i["type"] == "ipv4")
+    bad_asn = copy.deepcopy(ipv4)
+    bad_asn["data"]["ipv4"]["geo_ip"]["isp"]["autonomous_system"] = "Unknown ASN"
+    write_events("asn-unparsed", [bad_asn])
 
 
 def mock_config(indicators: list[dict]) -> None:
