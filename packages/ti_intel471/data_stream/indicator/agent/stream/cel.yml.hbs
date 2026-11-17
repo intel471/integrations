@@ -1,0 +1,132 @@
+config_version: 2
+interval: {{interval}}
+max_executions: {{max_executions}}
+resource.url: {{url}}
+resource.timeout: {{http_client_timeout}}
+# Retries 429 and 5xx with backoff (honours Retry-After); other 4xx fail fast.
+resource.retry.max_attempts: 5
+resource.retry.wait_min: 1s
+resource.retry.wait_max: 60s
+{{#if proxy_url}}
+resource.proxy_url: {{proxy_url}}
+{{/if}}
+{{#if ssl}}
+resource.ssl: {{ssl}}
+{{/if}}
+{{#if enable_request_tracer}}
+resource.tracer.filename: "../../logs/cel/http-request-trace-*.ndjson"
+resource.tracer.maxbackups: 5
+{{/if}}
+
+state:
+  # Sent as HTTP Basic credentials on every request. (auth.basic in the input
+  # config only covers the direct get()/post() helpers, not request().)
+  client_id: {{client_id}}
+  client_secret: {{client_secret}}
+  # Must match manifest.yml: checked (and fixed with --fix) by _dev/scripts/check_package.py.
+  user_agent: "Intel471-Elastic/0.1.0"
+  page_size: {{page_size}}
+  initial_interval: {{initial_interval}}
+  # Filters are frozen together with the cursor: a cursor is only valid for the
+  # exact filter set it was issued for, so changing one restarts the stream.
+  threat_type: "{{threat_type}}"
+  indicator_type: "{{indicator_type}}"
+  confidence: "{{confidence}}"
+
+redact:
+  fields:
+    - client_secret
+
+program: |
+  // The stream is followed with an opaque cursor (cursor_next). `from` is set
+  // once, on the first run, and replayed verbatim with every request, as are the
+  // filters; only the cursor ever advances. Elastic Agent persists state.cursor
+  // only after the events of an execution are published, so a failed page is
+  // re-fetched (at-least-once), never skipped.
+  {
+    "threat_type": state.?threat_type.orValue(""),
+    "type": state.?indicator_type.orValue(""),
+    "confidence": state.?confidence.orValue(""),
+  }.as(filters, filters.encode_json().as(filter_key,
+    (
+      has(state.cursor) && has(state.cursor.from) &&
+      state.cursor.?filter_key.orValue("") == filter_key
+    ?
+      state.cursor
+    :
+      {
+        "from": string(int(now - duration(state.initial_interval)) * 1000),
+        "filter_key": filter_key,
+      }
+    ).as(cur,
+      request(
+        "GET",
+        state.url.trim_suffix("/") + "/indicators/stream?" + (
+          {
+            "from": [cur.from],
+            "size": [string(state.page_size)],
+          }
+          .with(filters.threat_type != "" ? {"threat_type": [filters.threat_type]} : {})
+          .with(filters.type != "" ? {"type": [filters.type]} : {})
+          .with(filters.confidence != "" ? {"confidence": [filters.confidence]} : {})
+          .with(has(cur.next) && cur.next != null ? {"cursor": [cur.next]} : {})
+        ).format_query()
+      ).with({
+        "Header": {
+          "Accept": ["application/json"],
+          "Authorization": ["Basic " + (state.client_id + ":" + state.client_secret).base64()],
+          "User-Agent": [state.user_agent],
+        },
+      }).do_request().as(resp,
+        resp.StatusCode == 200 ?
+          bytes(resp.Body).decode_json().as(body,
+            (has(body.indicators) && body.indicators != null ? body.indicators : []).as(items, state.with({
+              "events": items.map(i, {"message": i.encode_json()}),
+              "cursor": {
+                "from": cur.from,
+                "filter_key": cur.filter_key,
+                // The final short page still returns a resume token: keep it.
+                "next": has(body.cursor_next) && body.cursor_next != null ? body.cursor_next : cur.?next.orValue(null),
+              },
+              // Drained when a page comes back with fewer items than requested.
+              "want_more": size(items) >= state.page_size,
+            }))
+          )
+        :
+          // Leave state.cursor untouched so the next run replays this request.
+          state.with({
+            "events": {
+              "error": {
+                "code": string(resp.StatusCode),
+                "id": string(resp.Status),
+                "message": "GET /indicators/stream: " + (
+                  size(resp.Body) != 0 ? string(resp.Body) : string(resp.Status) + " (" + string(resp.StatusCode) + ")"
+                ),
+              },
+            },
+            "want_more": false,
+          })
+      )
+    )
+  ))
+tags:
+{{#if preserve_original_event}}
+  - preserve_original_event
+{{/if}}
+{{#if preserve_duplicate_custom_fields}}
+  - preserve_duplicate_custom_fields
+{{/if}}
+{{#each tags as |tag|}}
+  - {{tag}}
+{{/each}}
+{{#contains "forwarded" tags}}
+publisher_pipeline.disable_host: true
+{{/contains}}
+fields_under_root: true
+fields:
+  _conf:
+    ioc_expiration_duration: {{ioc_expiration_duration}}
+{{#if processors}}
+processors:
+{{processors}}
+{{/if}}

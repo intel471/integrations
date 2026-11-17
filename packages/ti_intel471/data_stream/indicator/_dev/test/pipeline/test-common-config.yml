@@ -1,0 +1,10 @@
+fields:
+  _conf:
+    ioc_expiration_duration: 90d
+  tags:
+    - preserve_original_event
+    - forwarded
+    - intel471-indicator
+dynamic_fields:
+  # Revoked indicators expire at ingest time.
+  intel471.indicator.ioc_expired_at: '^\d{4}-\d{2}-\d{2}T.*'

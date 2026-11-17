@@ -1,0 +1,160 @@
+title: "Indicator"
+type: logs
+streams:
+  - input: cel
+    title: Indicators
+    description: Collect indicators from the Intel 471 Indicators API stream.
+    template_path: cel.yml.hbs
+    vars:
+      - name: initial_interval
+        type: text
+        title: Initial Interval
+        description: >-
+          How far back to start the stream on the first run (for example 24h, 720h).
+          This start point is saved with the cursor and never changes afterwards; to re-bootstrap,
+          change the filters below or reinstall the integration. Supported units are h/m/s.
+        default: 24h
+        multi: false
+        required: true
+        show_user: true
+      - name: interval
+        type: text
+        title: Interval
+        description: How often to poll the API for new indicators. Supported units are h/m/s.
+        default: 5m
+        multi: false
+        required: true
+        show_user: true
+      - name: threat_type
+        type: select
+        title: Threat Type
+        description: Only collect indicators of this threat type.
+        options:
+          - text: All
+            value: ""
+          - text: Malware
+            value: malware
+          - text: Bulletproof hosting
+            value: bulletproof_hosting
+        default: ""
+        multi: false
+        required: false
+        show_user: true
+      - name: indicator_type
+        type: select
+        title: Indicator Type
+        description: Only collect indicators of this type.
+        options:
+          - text: All
+            value: ""
+          - text: Domain
+            value: domain
+          - text: Email
+            value: email
+          - text: File
+            value: file
+          - text: IPv4
+            value: ipv4
+          - text: URL
+            value: url
+          - text: YARA
+            value: yara
+        default: ""
+        multi: false
+        required: false
+        show_user: false
+      - name: confidence
+        type: select
+        title: Confidence
+        description: Only collect indicators with this confidence.
+        options:
+          - text: All
+            value: ""
+          - text: High
+            value: high
+          - text: Medium
+            value: medium
+          - text: Low
+            value: low
+        default: ""
+        multi: false
+        required: false
+        show_user: false
+      - name: page_size
+        type: integer
+        title: Page Size
+        description: Number of indicators requested per page (1-1000).
+        default: 1000
+        multi: false
+        required: true
+        show_user: false
+      - name: max_executions
+        type: integer
+        title: Maximum Pages Per Interval
+        description: Maximum number of pages fetched before waiting for the next interval.
+        default: 1000
+        multi: false
+        required: true
+        show_user: false
+      - name: http_client_timeout
+        type: text
+        title: HTTP Client Timeout
+        description: Duration before declaring that the HTTP client connection has timed out. Valid time units are ns, us, ms, s, m, h.
+        default: 60s
+        multi: false
+        required: true
+        show_user: false
+      - name: ioc_expiration_duration
+        type: text
+        title: IOC Expiration Duration
+        description: >-
+          Fallback lifetime for indicators that arrive without an `expiration_ts`. The indicator is removed from the
+          latest IOC index this long after it was last seen. Use [Elasticsearch time units](https://www.elastic.co/guide/en/elasticsearch/reference/current/api-conventions.html#time-units) in days, hours or minutes (for example 90d).
+        default: 90d
+        multi: false
+        required: true
+        show_user: false
+      - name: tags
+        type: text
+        title: Tags
+        multi: true
+        required: true
+        show_user: false
+        default:
+          - forwarded
+          - intel471-indicator
+      - name: preserve_original_event
+        type: bool
+        title: Preserve original event
+        description: Preserves a raw copy of the original indicator, added to the field `event.original`.
+        multi: false
+        required: true
+        show_user: true
+        default: false
+      - name: preserve_duplicate_custom_fields
+        type: bool
+        title: Preserve duplicate custom fields
+        description: Preserve `intel471.indicator` fields that were copied to Elastic Common Schema (ECS) fields.
+        multi: false
+        required: true
+        show_user: false
+        default: false
+      - name: enable_request_tracer
+        type: bool
+        title: Enable request tracing
+        description: >-
+          The request tracer logs requests and responses to the agent's local file-system for debugging configurations.
+          Enabling this request tracing compromises security and should only be used for debugging. See [documentation](https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-input-cel.html#_resource_tracer_filename) for details.
+        multi: false
+        required: false
+        show_user: false
+        default: false
+      - name: processors
+        type: yaml
+        title: Processors
+        description: >-
+          Processors are used to reduce the number of fields in the exported event or to enhance the event with metadata.
+          This executes in the agent before the logs are parsed. See [Processors](https://www.elastic.co/guide/en/beats/filebeat/current/filtering-and-enhancing-data.html) for details.
+        multi: false
+        required: false
+        show_user: false

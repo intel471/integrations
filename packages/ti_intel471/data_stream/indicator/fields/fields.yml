@@ -1,0 +1,183 @@
+- name: intel471.indicator
+  type: group
+  description: Fields from the Intel 471 Indicators API that have no ECS equivalent (or are kept alongside it).
+  fields:
+    - name: id
+      type: keyword
+      description: Unique identifier of the indicator.
+    - name: type
+      type: keyword
+      description: Indicator type (domain, email, file, ipv4, url, yara).
+    - name: pattern
+      type: keyword
+      ignore_above: 8191
+      description: Detection pattern for the indicator (a STIX 2.1 pattern, or a YARA rule).
+    - name: pattern_type
+      type: keyword
+      description: Pattern language, `stix` or `yara`.
+    - name: pattern_version
+      type: keyword
+      description: Version of the pattern language.
+    - name: confidence
+      type: long
+      description: Confidence score for the indicator, 0-100.
+    - name: description
+      type: keyword
+      description: Description of the indicator.
+    - name: expiration_ts
+      type: date
+      description: When the indicator expires, as reported by the API.
+    - name: ioc_expired_at
+      type: date
+      description: When the indicator is removed from the latest IOC index.
+    - name: ioc_expiration_reason
+      type: keyword
+      description: Why `ioc_expired_at` has its value (revoked, expiration_ts, or the configured fallback).
+    - name: revocation.revoked
+      type: boolean
+      description: Whether the indicator has been revoked.
+    - name: activity
+      type: group
+      fields:
+        - name: first_seen_ts
+          type: date
+          description: First time the indicator was seen.
+        - name: last_seen_ts
+          type: date
+          description: Last time the indicator was seen.
+    - name: classification.girs
+      type: group
+      description: General Intelligence Requirements (GIRs) associated with the indicator.
+      fields:
+        - name: name
+          type: keyword
+          description: GIR name.
+        - name: path
+          type: keyword
+          description: GIR path, for example 1.1.13.
+    - name: kill_chain_phases
+      type: group
+      description: Kill chain phases associated with the indicator.
+      fields:
+        - name: kill_chain_name
+          type: keyword
+          description: Kill chain framework.
+        - name: phase_name
+          type: keyword
+          description: Phase within the kill chain.
+    - name: data
+      type: group
+      description: The observable the indicator describes.
+      fields:
+        - name: domain
+          type: keyword
+          description: Domain name.
+        - name: email
+          type: keyword
+          description: Email address.
+        - name: url
+          type: keyword
+          description: URL.
+        - name: file
+          type: group
+          fields:
+            - name: md5
+              type: keyword
+              description: MD5 hash.
+            - name: sha1
+              type: keyword
+              description: SHA-1 hash.
+            - name: sha256
+              type: keyword
+              description: SHA-256 hash.
+            - name: ssdeep
+              type: keyword
+              description: SSDeep hash.
+            - name: size
+              type: long
+              description: File size in bytes.
+            - name: type
+              type: keyword
+              description: File type, for example MSI or PEEXE_x86.
+        - name: ipv4
+          type: group
+          fields:
+            - name: ip_address
+              type: ip
+              description: IPv4 address.
+            - name: geo_ip
+              type: group
+              fields:
+                - name: city
+                  type: keyword
+                  description: City.
+                - name: country
+                  type: keyword
+                  description: Country name.
+                - name: country_code
+                  type: keyword
+                  description: ISO 3166-1 alpha-2 country code.
+                - name: subdivision
+                  type: keyword
+                  description: Administrative subdivisions (states, provinces, ...).
+                - name: isp
+                  type: group
+                  fields:
+                    - name: autonomous_system
+                      type: keyword
+                      description: Autonomous system, for example "AS64496 Example Networks".
+                    - name: isp
+                      type: keyword
+                      description: Internet service provider.
+                    - name: network
+                      type: keyword
+                      description: Network range (CIDR) containing the address.
+                    - name: organization
+                      type: keyword
+                      description: Organization the address is registered to.
+        - name: yara
+          type: group
+          fields:
+            - name: signature
+              type: match_only_text
+              description: YARA rule source.
+            - name: title
+              type: keyword
+              description: YARA rule name.
+    - name: threat
+      type: group
+      description: Threat the indicator is associated with.
+      fields:
+        - name: type
+          type: keyword
+          description: Threat type, `malware` or `bulletproof_hosting`.
+        - name: data.malware
+          type: group
+          fields:
+            - name: component
+              type: keyword
+              description: Malware component.
+            - name: family
+              type: keyword
+              description: Malware family name.
+            - name: id
+              type: keyword
+              description: Malware identifier.
+            - name: variant
+              type: keyword
+              description: Malware variant.
+            - name: version
+              type: keyword
+              description: Malware version.
+        - name: data.malware_family
+          type: group
+          fields:
+            - name: id
+              type: keyword
+              description: Malware family identifier.
+            - name: name
+              type: keyword
+              description: Malware family name.
+        - name: data.bulletproof_hosting.provider
+          type: keyword
+          description: Bulletproof hosting provider.

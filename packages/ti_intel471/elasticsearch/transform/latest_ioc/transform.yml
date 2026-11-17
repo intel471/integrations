@@ -1,0 +1,40 @@
+# Keeps one document per indicator (the latest seen) for detection rules and
+# indicator match. Indicators are removed once intel471.indicator.ioc_expired_at
+# passes (revoked, expired per the API, or the configured fallback duration).
+source:
+  index:
+    - "logs-ti_intel471.indicator-*"
+  query:
+    bool:
+      must_not:
+        exists:
+          field: error.message
+# Bump the dest.index suffix on breaking mapping changes, and bump
+# fleet_transform_version for any change to this configuration.
+dest:
+  index: "logs-ti_intel471_latest.dest_indicator-1"
+  aliases:
+    - alias: "logs-ti_intel471_latest.indicator"
+      move_on_creation: true
+latest:
+  unique_key:
+    # Namespace deliberately excluded: indicators are global.
+    - event.id
+  # Most recently received version wins. (@timestamp is last_seen, which a
+  # revocation may leave unchanged, so it can't break the tie.)
+  sort: "event.ingested"
+description: Latest Intel 471 IOC data
+frequency: 30s
+sync:
+  time:
+    field: "event.ingested"
+    delay: 120s
+retention_policy:
+  time:
+    field: intel471.indicator.ioc_expired_at
+    max_age: 1m
+_meta:
+  managed: true
+  fleet_transform_version: 0.1.1
+settings:
+  num_failure_retries: -1

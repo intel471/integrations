@@ -1,0 +1,13 @@
+{
+  "events": [
+    {
+      "message": "{\"activity\": {\"first_seen_ts\": \"2026-09-27T09:12:20Z\", \"last_seen_ts\": \"2026-11-08T17:53:47Z\"}, \"classification\": {\"girs\": [{\"name\": \"Bulletproof hosting (BPH) services\", \"path\": \"3.1.1\"}]}, \"confidence\": 85, \"data\": {\"domain\": \"domain-8.example\"}, \"description\": \"Bulletproof hosting infrastructure provided by: ccweb\", \"expiration_ts\": \"2026-11-10T05:53:47Z\", \"id\": \"bph-indicator--00000000-0000-5000-8000-000000000001\", \"kill_chain_phases\": [{\"kill_chain_name\": \"mitre-attack\", \"phase_name\": \"resource_development\"}], \"pattern\": \"[domain-name:value = 'domain-8.example']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"threat\": {\"data\": {\"bulletproof_hosting\": {\"provider\": \"ccweb\"}}, \"type\": \"bulletproof_hosting\"}, \"type\": \"domain\"}"
+    },
+    {
+      "message": "{\"activity\": {\"first_seen_ts\": \"2026-03-03T05:05:55Z\", \"last_seen_ts\": \"2026-11-08T19:20:04Z\"}, \"classification\": {\"girs\": [{\"name\": \"Bulletproof hosting (BPH) services\", \"path\": \"3.1.1\"}]}, \"confidence\": 85, \"data\": {\"domain\": \"domain-9.example\"}, \"description\": \"Bulletproof hosting infrastructure provided by: ccweb\", \"expiration_ts\": \"2026-11-10T05:55:22Z\", \"id\": \"bph-indicator--00000000-0000-5000-8000-000000000002\", \"kill_chain_phases\": [{\"kill_chain_name\": \"mitre-attack\", \"phase_name\": \"resource_development\"}], \"pattern\": \"[domain-name:value = 'domain-9.example']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"threat\": {\"data\": {\"bulletproof_hosting\": {\"provider\": \"ccweb\"}}, \"type\": \"bulletproof_hosting\"}, \"type\": \"domain\"}"
+    },
+    {
+      "message": "{\"activity\": {\"first_seen_ts\": \"2026-09-24T05:23:45Z\", \"last_seen_ts\": \"2026-11-08T17:53:46Z\"}, \"classification\": {\"girs\": [{\"name\": \"Bulletproof hosting (BPH) services\", \"path\": \"3.1.1\"}]}, \"confidence\": 85, \"data\": {\"domain\": \"domain-10.example\"}, \"description\": \"Bulletproof hosting infrastructure provided by: ccweb\", \"expiration_ts\": \"2026-11-10T05:53:46Z\", \"id\": \"bph-indicator--00000000-0000-5000-8000-000000000003\", \"kill_chain_phases\": [{\"kill_chain_name\": \"mitre-attack\", \"phase_name\": \"resource_development\"}], \"pattern\": \"[domain-name:value = 'domain-10.example']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"threat\": {\"data\": {\"bulletproof_hosting\": {\"provider\": \"ccweb\"}}, \"type\": \"bulletproof_hosting\"}, \"type\": \"domain\"}"
+    }
+  ]
+}

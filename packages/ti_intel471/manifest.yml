@@ -1,0 +1,84 @@
+format_version: "3.4.0"
+name: ti_intel471
+title: Intel 471
+version: "0.1.0"
+description: "Ingest threat intelligence indicators from the Intel 471 Indicators API with Elastic Agent."
+type: integration
+source:
+  license: "Elastic-2.0"
+categories:
+  - security
+  - threat_intel
+conditions:
+  kibana:
+    version: "^8.19.0 || ^9.1.0"
+  elastic:
+    subscription: basic
+icons:
+  - src: /img/intel471-logo.svg
+    title: Intel 471 logo
+    size: 339x104
+    type: image/svg+xml
+policy_templates:
+  - name: intel471
+    title: Intel 471
+    description: Collect threat indicators from Intel 471.
+    deployment_modes:
+      default:
+        enabled: true
+      agentless:
+        enabled: false
+    inputs:
+      - type: cel
+        title: Intel 471 Indicators API
+        description: Collect indicators from the Intel 471 Indicators API.
+        vars:
+          - name: url
+            type: text
+            title: API URL
+            description: Base URL of the Intel 471 Indicators API.
+            default: https://api.intel471.cloud/integrations/indicators/v1
+            multi: false
+            required: true
+            show_user: false
+          - name: client_id
+            type: text
+            title: Client ID
+            description: Client ID issued by the Intel 471 Developer Portal (https://developer.intel471.com/).
+            multi: false
+            required: true
+            show_user: true
+          - name: client_secret
+            type: password
+            title: Client Secret
+            description: Client Secret issued by the Intel 471 Developer Portal.
+            multi: false
+            required: true
+            show_user: true
+            secret: true
+          - name: proxy_url
+            type: text
+            title: Proxy URL
+            description: >-
+              URL to proxy connections in the form of http[s]://<user>:<password>@<server name/ip>:<port>.
+              Please ensure your username and password are in URL encoded format.
+            multi: false
+            required: false
+            show_user: false
+          - name: ssl
+            type: yaml
+            title: SSL Configuration
+            description: >-
+              SSL configuration options. See [documentation](https://www.elastic.co/guide/en/beats/filebeat/current/configuration-ssl.html#ssl-common-config) for details.
+            multi: false
+            required: false
+            show_user: false
+            default: |
+              #certificate_authorities:
+              #  - |
+              #    -----BEGIN CERTIFICATE-----
+              #    ...
+              #    -----END CERTIFICATE-----
+owner:
+  github: intel471/integrations
+  type: partner

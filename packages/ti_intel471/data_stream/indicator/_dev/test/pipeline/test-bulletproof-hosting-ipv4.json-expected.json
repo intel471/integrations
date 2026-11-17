@@ -1,0 +1,345 @@
+{
+    "expected": [
+        {
+            "@timestamp": "2026-11-08T23:00:32.000Z",
+            "ecs": {
+                "version": "8.17.0"
+            },
+            "event": {
+                "category": [
+                    "threat"
+                ],
+                "id": "bph-indicator--00000000-0000-5000-8000-000000000004",
+                "kind": "enrichment",
+                "original": "{\"activity\": {\"first_seen_ts\": \"2026-09-25T09:00:09Z\", \"last_seen_ts\": \"2026-11-08T23:00:32Z\"}, \"classification\": {\"girs\": [{\"name\": \"Bulletproof hosting (BPH) services\", \"path\": \"3.1.1\"}]}, \"confidence\": 85, \"data\": {\"ipv4\": {\"geo_ip\": {\"city\": \"Banfield\", \"country\": \"Argentina\", \"country_code\": \"AR\", \"isp\": {\"autonomous_system\": \"AS64499 Example Networks 4\", \"isp\": \"Example ISP 4\", \"network\": \"10.18.0.0/20\", \"organization\": \"Example ISP 4\"}, \"subdivision\": [\"Buenos Aires\"]}, \"ip_address\": \"10.18.0.4\"}}, \"description\": \"Bulletproof hosting infrastructure provided by: ccweb\", \"expiration_ts\": \"2026-11-10T11:00:32Z\", \"id\": \"bph-indicator--00000000-0000-5000-8000-000000000004\", \"kill_chain_phases\": [{\"kill_chain_name\": \"mitre-attack\", \"phase_name\": \"resource_development\"}], \"pattern\": \"[ipv4-addr:value = '10.18.0.4']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"threat\": {\"data\": {\"bulletproof_hosting\": {\"provider\": \"ccweb\"}}, \"type\": \"bulletproof_hosting\"}, \"type\": \"ipv4\"}",
+                "type": [
+                    "indicator"
+                ]
+            },
+            "intel471": {
+                "indicator": {
+                    "classification": {
+                        "girs": [
+                            {
+                                "name": "Bulletproof hosting (BPH) services",
+                                "path": "3.1.1"
+                            }
+                        ]
+                    },
+                    "confidence": 85,
+                    "data": {
+                        "ipv4": {
+                            "geo_ip": {
+                                "isp": {
+                                    "autonomous_system": "AS64499 Example Networks 4",
+                                    "isp": "Example ISP 4",
+                                    "network": "10.18.0.0/20",
+                                    "organization": "Example ISP 4"
+                                },
+                                "subdivision": [
+                                    "Buenos Aires"
+                                ]
+                            }
+                        }
+                    },
+                    "expiration_ts": "2026-11-10T11:00:32.000Z",
+                    "ioc_expiration_reason": "expiration_ts",
+                    "ioc_expired_at": "2026-11-10T11:00:32.000Z",
+                    "kill_chain_phases": [
+                        {
+                            "kill_chain_name": "mitre-attack",
+                            "phase_name": "resource_development"
+                        }
+                    ],
+                    "pattern": "[ipv4-addr:value = '10.18.0.4']",
+                    "pattern_type": "stix",
+                    "pattern_version": "2.1",
+                    "threat": {
+                        "data": {
+                            "bulletproof_hosting": {
+                                "provider": "ccweb"
+                            }
+                        },
+                        "type": "bulletproof_hosting"
+                    },
+                    "type": "ipv4"
+                }
+            },
+            "related": {
+                "ip": [
+                    "10.18.0.4"
+                ]
+            },
+            "tags": [
+                "preserve_original_event",
+                "forwarded",
+                "intel471-indicator"
+            ],
+            "threat": {
+                "feed": {
+                    "description": "Threat indicators from the Intel 471 Indicators API.",
+                    "name": "Intel 471",
+                    "reference": "https://intel471.com/"
+                },
+                "framework": "MITRE ATT&CK",
+                "indicator": {
+                    "as": {
+                        "number": 64499,
+                        "organization": {
+                            "name": "Example Networks 4"
+                        }
+                    },
+                    "confidence": "High",
+                    "description": "Bulletproof hosting infrastructure provided by: ccweb",
+                    "first_seen": "2026-09-25T09:00:09.000Z",
+                    "geo": {
+                        "city_name": "Banfield",
+                        "country_iso_code": "AR",
+                        "country_name": "Argentina",
+                        "region_name": "Buenos Aires"
+                    },
+                    "ip": "10.18.0.4",
+                    "last_seen": "2026-11-08T23:00:32.000Z",
+                    "name": "10.18.0.4",
+                    "provider": "Intel 471",
+                    "type": "ipv4-addr"
+                },
+                "tactic": {
+                    "id": [
+                        "TA0042"
+                    ],
+                    "name": [
+                        "Resource Development"
+                    ]
+                }
+            }
+        },
+        {
+            "@timestamp": "2026-11-08T23:00:31.000Z",
+            "ecs": {
+                "version": "8.17.0"
+            },
+            "event": {
+                "category": [
+                    "threat"
+                ],
+                "id": "bph-indicator--00000000-0000-5000-8000-000000000005",
+                "kind": "enrichment",
+                "original": "{\"activity\": {\"first_seen_ts\": \"2026-05-06T11:00:09Z\", \"last_seen_ts\": \"2026-11-08T23:00:31Z\"}, \"classification\": {\"girs\": [{\"name\": \"Bulletproof hosting (BPH) services\", \"path\": \"3.1.1\"}]}, \"confidence\": 85, \"data\": {\"ipv4\": {\"geo_ip\": {\"country\": \"Egypt\", \"country_code\": \"EG\", \"isp\": {\"autonomous_system\": \"AS64500 Example Networks 5\", \"isp\": \"Example ISP 5\", \"network\": \"10.18.0.0/17\", \"organization\": \"Example ISP 5\"}, \"subdivision\": [\"Qalyubia\"]}, \"ip_address\": \"10.18.0.5\"}}, \"description\": \"Bulletproof hosting infrastructure provided by: ccweb\", \"expiration_ts\": \"2026-11-10T11:00:31Z\", \"id\": \"bph-indicator--00000000-0000-5000-8000-000000000005\", \"kill_chain_phases\": [{\"kill_chain_name\": \"mitre-attack\", \"phase_name\": \"resource_development\"}], \"pattern\": \"[ipv4-addr:value = '10.18.0.5']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"threat\": {\"data\": {\"bulletproof_hosting\": {\"provider\": \"ccweb\"}}, \"type\": \"bulletproof_hosting\"}, \"type\": \"ipv4\"}",
+                "type": [
+                    "indicator"
+                ]
+            },
+            "intel471": {
+                "indicator": {
+                    "classification": {
+                        "girs": [
+                            {
+                                "name": "Bulletproof hosting (BPH) services",
+                                "path": "3.1.1"
+                            }
+                        ]
+                    },
+                    "confidence": 85,
+                    "data": {
+                        "ipv4": {
+                            "geo_ip": {
+                                "isp": {
+                                    "autonomous_system": "AS64500 Example Networks 5",
+                                    "isp": "Example ISP 5",
+                                    "network": "10.18.0.0/17",
+                                    "organization": "Example ISP 5"
+                                },
+                                "subdivision": [
+                                    "Qalyubia"
+                                ]
+                            }
+                        }
+                    },
+                    "expiration_ts": "2026-11-10T11:00:31.000Z",
+                    "ioc_expiration_reason": "expiration_ts",
+                    "ioc_expired_at": "2026-11-10T11:00:31.000Z",
+                    "kill_chain_phases": [
+                        {
+                            "kill_chain_name": "mitre-attack",
+                            "phase_name": "resource_development"
+                        }
+                    ],
+                    "pattern": "[ipv4-addr:value = '10.18.0.5']",
+                    "pattern_type": "stix",
+                    "pattern_version": "2.1",
+                    "threat": {
+                        "data": {
+                            "bulletproof_hosting": {
+                                "provider": "ccweb"
+                            }
+                        },
+                        "type": "bulletproof_hosting"
+                    },
+                    "type": "ipv4"
+                }
+            },
+            "related": {
+                "ip": [
+                    "10.18.0.5"
+                ]
+            },
+            "tags": [
+                "preserve_original_event",
+                "forwarded",
+                "intel471-indicator"
+            ],
+            "threat": {
+                "feed": {
+                    "description": "Threat indicators from the Intel 471 Indicators API.",
+                    "name": "Intel 471",
+                    "reference": "https://intel471.com/"
+                },
+                "framework": "MITRE ATT&CK",
+                "indicator": {
+                    "as": {
+                        "number": 64500,
+                        "organization": {
+                            "name": "Example Networks 5"
+                        }
+                    },
+                    "confidence": "High",
+                    "description": "Bulletproof hosting infrastructure provided by: ccweb",
+                    "first_seen": "2026-05-06T11:00:09.000Z",
+                    "geo": {
+                        "country_iso_code": "EG",
+                        "country_name": "Egypt",
+                        "region_name": "Qalyubia"
+                    },
+                    "ip": "10.18.0.5",
+                    "last_seen": "2026-11-08T23:00:31.000Z",
+                    "name": "10.18.0.5",
+                    "provider": "Intel 471",
+                    "type": "ipv4-addr"
+                },
+                "tactic": {
+                    "id": [
+                        "TA0042"
+                    ],
+                    "name": [
+                        "Resource Development"
+                    ]
+                }
+            }
+        },
+        {
+            "@timestamp": "2026-11-08T23:00:15.000Z",
+            "ecs": {
+                "version": "8.17.0"
+            },
+            "event": {
+                "category": [
+                    "threat"
+                ],
+                "id": "bph-indicator--00000000-0000-5000-8000-000000000006",
+                "kind": "enrichment",
+                "original": "{\"activity\": {\"first_seen_ts\": \"2026-03-03T15:00:27Z\", \"last_seen_ts\": \"2026-11-08T23:00:15Z\"}, \"classification\": {\"girs\": [{\"name\": \"Bulletproof hosting (BPH) services\", \"path\": \"3.1.1\"}]}, \"confidence\": 85, \"data\": {\"ipv4\": {\"geo_ip\": {\"city\": \"Kingston\", \"country\": \"Jamaica\", \"country_code\": \"JM\", \"isp\": {\"autonomous_system\": \"AS64501 Example Networks 6\", \"isp\": \"Example ISP 6\", \"network\": \"10.18.0.0/22\", \"organization\": \"Example ISP 6\"}, \"subdivision\": [\"Kingston\"]}, \"ip_address\": \"10.18.0.6\"}}, \"description\": \"Bulletproof hosting infrastructure provided by: ccweb\", \"expiration_ts\": \"2026-11-10T11:00:15Z\", \"id\": \"bph-indicator--00000000-0000-5000-8000-000000000006\", \"kill_chain_phases\": [{\"kill_chain_name\": \"mitre-attack\", \"phase_name\": \"resource_development\"}], \"pattern\": \"[ipv4-addr:value = '10.18.0.6']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"threat\": {\"data\": {\"bulletproof_hosting\": {\"provider\": \"ccweb\"}}, \"type\": \"bulletproof_hosting\"}, \"type\": \"ipv4\"}",
+                "type": [
+                    "indicator"
+                ]
+            },
+            "intel471": {
+                "indicator": {
+                    "classification": {
+                        "girs": [
+                            {
+                                "name": "Bulletproof hosting (BPH) services",
+                                "path": "3.1.1"
+                            }
+                        ]
+                    },
+                    "confidence": 85,
+                    "data": {
+                        "ipv4": {
+                            "geo_ip": {
+                                "isp": {
+                                    "autonomous_system": "AS64501 Example Networks 6",
+                                    "isp": "Example ISP 6",
+                                    "network": "10.18.0.0/22",
+                                    "organization": "Example ISP 6"
+                                },
+                                "subdivision": [
+                                    "Kingston"
+                                ]
+                            }
+                        }
+                    },
+                    "expiration_ts": "2026-11-10T11:00:15.000Z",
+                    "ioc_expiration_reason": "expiration_ts",
+                    "ioc_expired_at": "2026-11-10T11:00:15.000Z",
+                    "kill_chain_phases": [
+                        {
+                            "kill_chain_name": "mitre-attack",
+                            "phase_name": "resource_development"
+                        }
+                    ],
+                    "pattern": "[ipv4-addr:value = '10.18.0.6']",
+                    "pattern_type": "stix",
+                    "pattern_version": "2.1",
+                    "threat": {
+                        "data": {
+                            "bulletproof_hosting": {
+                                "provider": "ccweb"
+                            }
+                        },
+                        "type": "bulletproof_hosting"
+                    },
+                    "type": "ipv4"
+                }
+            },
+            "related": {
+                "ip": [
+                    "10.18.0.6"
+                ]
+            },
+            "tags": [
+                "preserve_original_event",
+                "forwarded",
+                "intel471-indicator"
+            ],
+            "threat": {
+                "feed": {
+                    "description": "Threat indicators from the Intel 471 Indicators API.",
+                    "name": "Intel 471",
+                    "reference": "https://intel471.com/"
+                },
+                "framework": "MITRE ATT&CK",
+                "indicator": {
+                    "as": {
+                        "number": 64501,
+                        "organization": {
+                            "name": "Example Networks 6"
+                        }
+                    },
+                    "confidence": "High",
+                    "description": "Bulletproof hosting infrastructure provided by: ccweb",
+                    "first_seen": "2026-03-03T15:00:27.000Z",
+                    "geo": {
+                        "city_name": "Kingston",
+                        "country_iso_code": "JM",
+                        "country_name": "Jamaica",
+                        "region_name": "Kingston"
+                    },
+                    "ip": "10.18.0.6",
+                    "last_seen": "2026-11-08T23:00:15.000Z",
+                    "name": "10.18.0.6",
+                    "provider": "Intel 471",
+                    "type": "ipv4-addr"
+                },
+                "tactic": {
+                    "id": [
+                        "TA0042"
+                    ],
+                    "name": [
+                        "Resource Development"
+                    ]
+                }
+            }
+        }
+    ]
+}

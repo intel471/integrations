@@ -1,0 +1,501 @@
+---
+description: Pipeline for processing Intel 471 indicators.
+processors:
+  - terminate:
+      tag: terminate_data_collection_error_0b1f4a8e
+      if: ctx.error?.message != null
+      description: Error message set by the CEL program and no data to process.
+  - set:
+      tag: set_ecs_version_1d3e5f7a
+      field: ecs.version
+      value: '8.17.0'
+  - rename:
+      tag: rename_message_to_event_original_2c4e6a8b
+      field: message
+      target_field: event.original
+      ignore_missing: true
+      if: ctx.event?.original == null
+  - remove:
+      tag: remove_message_3d5f7b9c
+      field: message
+      ignore_missing: true
+      if: ctx.event?.original != null
+      description: The `message` field is no longer required if the document has an `event.original` field.
+  - json:
+      tag: json_event_original_4e6a8c0d
+      field: event.original
+      target_field: intel471.indicator
+  - fingerprint:
+      tag: fingerprint_indicator_5f7b9d1e
+      fields:
+        - event.original
+      target_field: _id
+      description: >-
+        The _id is a hash of the indicator exactly as the API sent it. Data streams reject a second
+        document with the same _id, so a re-delivered page (at-least-once) is dropped as a duplicate,
+        while any real change to the indicator (revocation, new expiry, new last seen) hashes to a
+        new _id and is indexed.
+
+  ####################
+  # Event ECS fields #
+  ####################
+  - set:
+      tag: set_event_kind_6a8c0e2f
+      field: event.kind
+      value: enrichment
+  - set:
+      tag: set_event_category_7b9d1f3a
+      field: event.category
+      value: [threat]
+  - set:
+      tag: set_event_type_8c0e2a4b
+      field: event.type
+      value: [indicator]
+  - set:
+      tag: set_event_id_9d1f3b5c
+      field: event.id
+      copy_from: intel471.indicator.id
+      ignore_empty_value: true
+
+  ######################
+  # Threat feed fields #
+  ######################
+  - set:
+      tag: set_threat_feed_name_0e2a4c6d
+      field: threat.feed.name
+      value: Intel 471
+  - set:
+      tag: set_threat_feed_description_1f3b5d7e
+      field: threat.feed.description
+      value: Threat indicators from the Intel 471 Indicators API.
+  - set:
+      tag: set_threat_feed_reference_2a4c6e8f
+      field: threat.feed.reference
+      value: https://intel471.com/
+  - set:
+      tag: set_threat_indicator_provider_3b5d7f9a
+      field: threat.indicator.provider
+      value: Intel 471
+
+  ############################
+  # Generic indicator fields #
+  ############################
+  - date:
+      tag: date_first_seen_4c6e8a0b
+      field: intel471.indicator.activity.first_seen_ts
+      target_field: threat.indicator.first_seen
+      formats: [ISO8601]
+      if: ctx.intel471.indicator.activity?.first_seen_ts != null
+  - date:
+      tag: date_last_seen_5d7f9b1c
+      field: intel471.indicator.activity.last_seen_ts
+      target_field: threat.indicator.last_seen
+      formats: [ISO8601]
+      if: ctx.intel471.indicator.activity?.last_seen_ts != null
+  - set:
+      tag: set_timestamp_from_last_seen_6e8a0c2d
+      field: '@timestamp'
+      copy_from: threat.indicator.last_seen
+      ignore_empty_value: true
+  - date:
+      tag: date_expiration_ts_7f9b1d3e
+      field: intel471.indicator.expiration_ts
+      target_field: intel471.indicator.expiration_ts
+      formats: [ISO8601]
+      if: ctx.intel471.indicator.expiration_ts != null
+  - set:
+      tag: set_threat_indicator_description_8a0c2e4f
+      field: threat.indicator.description
+      copy_from: intel471.indicator.description
+      ignore_empty_value: true
+  - convert:
+      tag: convert_confidence_9b1d3f5a
+      field: intel471.indicator.confidence
+      type: long
+      ignore_missing: true
+  - script:
+      tag: script_threat_indicator_confidence_0c2e4a6b
+      description: Map the 0-100 confidence onto the ECS scale, per the STIX 2.1 None/Low/Med/High scale.
+      lang: painless
+      source: |
+        def c = ctx.intel471?.indicator?.confidence;
+        String v = 'Not Specified';
+        if (c != null) {
+          if (c == 0) { v = 'None'; }
+          else if (c >= 1 && c <= 29) { v = 'Low'; }
+          else if (c >= 30 && c <= 69) { v = 'Medium'; }
+          else if (c >= 70 && c <= 100) { v = 'High'; }
+        }
+        ctx.threat.indicator.confidence = v;
+
+  ###############################
+  # Indicator type and observable
+  ###############################
+  - script:
+      tag: script_threat_indicator_type_1d3f5b7c
+      description: Map the Intel 471 indicator type onto the STIX 2.1 observable type used by ECS.
+      lang: painless
+      params:
+        types:
+          domain: domain-name
+          email: email-addr
+          file: file
+          ipv4: ipv4-addr
+          url: url
+      source: |
+        def t = ctx.intel471?.indicator?.type;
+        if (t != null && params.types.containsKey(t)) {
+          ctx.threat.indicator.type = params.types[t];
+        }
+
+  # domain
+  - set:
+      tag: set_indicator_url_domain_2e4a6c8d
+      field: threat.indicator.url.domain
+      copy_from: intel471.indicator.data.domain
+      if: ctx.intel471.indicator.data?.domain != null
+  - set:
+      tag: set_indicator_name_domain_3f5b7d9e
+      field: threat.indicator.name
+      copy_from: intel471.indicator.data.domain
+      if: ctx.intel471.indicator.data?.domain != null
+  - append:
+      tag: append_related_hosts_domain_4a6c8e0f
+      field: related.hosts
+      value: '{{{intel471.indicator.data.domain}}}'
+      allow_duplicates: false
+      if: ctx.intel471.indicator.data?.domain != null
+
+  # email
+  - set:
+      tag: set_indicator_email_address_5b7d9f1a
+      field: threat.indicator.email.address
+      copy_from: intel471.indicator.data.email
+      if: ctx.intel471.indicator.data?.email != null
+  - set:
+      tag: set_indicator_name_email_6c8e0a2b
+      field: threat.indicator.name
+      copy_from: intel471.indicator.data.email
+      if: ctx.intel471.indicator.data?.email != null
+
+  # url
+  - uri_parts:
+      tag: uri_parts_indicator_url_7d9f1b3c
+      field: intel471.indicator.data.url
+      target_field: threat.indicator.url
+      keep_original: true
+      remove_if_successful: false
+      if: ctx.intel471.indicator.data?.url != null
+      on_failure:
+        - set:
+            tag: set_indicator_url_original_on_failure_8e0a2c4d
+            field: threat.indicator.url.original
+            copy_from: intel471.indicator.data.url
+  - set:
+      tag: set_indicator_url_full_9f1b3d5e
+      field: threat.indicator.url.full
+      copy_from: intel471.indicator.data.url
+      if: ctx.intel471.indicator.data?.url != null
+  - set:
+      tag: set_indicator_name_url_0a2c4e6f
+      field: threat.indicator.name
+      copy_from: intel471.indicator.data.url
+      if: ctx.intel471.indicator.data?.url != null
+  - append:
+      tag: append_related_hosts_url_1b3d5f7a
+      field: related.hosts
+      value: '{{{threat.indicator.url.domain}}}'
+      allow_duplicates: false
+      if: ctx.intel471.indicator.data?.url != null && ctx.threat.indicator.url?.domain != null
+
+  # ipv4
+  - set:
+      tag: set_indicator_ip_2c4e6a8b
+      field: threat.indicator.ip
+      copy_from: intel471.indicator.data.ipv4.ip_address
+      if: ctx.intel471.indicator.data?.ipv4?.ip_address != null
+  - set:
+      tag: set_indicator_name_ip_3d5f7b9c
+      field: threat.indicator.name
+      copy_from: intel471.indicator.data.ipv4.ip_address
+      if: ctx.intel471.indicator.data?.ipv4?.ip_address != null
+  - append:
+      tag: append_related_ip_4e6a8c0d
+      field: related.ip
+      value: '{{{intel471.indicator.data.ipv4.ip_address}}}'
+      allow_duplicates: false
+      if: ctx.intel471.indicator.data?.ipv4?.ip_address != null
+  - set:
+      tag: set_indicator_geo_country_name_5f7b9d1e
+      field: threat.indicator.geo.country_name
+      copy_from: intel471.indicator.data.ipv4.geo_ip.country
+      if: ctx.intel471.indicator.data?.ipv4?.geo_ip?.country != null
+  - set:
+      tag: set_indicator_geo_country_iso_code_6a8c0e2f
+      field: threat.indicator.geo.country_iso_code
+      copy_from: intel471.indicator.data.ipv4.geo_ip.country_code
+      if: ctx.intel471.indicator.data?.ipv4?.geo_ip?.country_code != null
+  - set:
+      tag: set_indicator_geo_city_name_7b9d1f3a
+      field: threat.indicator.geo.city_name
+      copy_from: intel471.indicator.data.ipv4.geo_ip.city
+      if: ctx.intel471.indicator.data?.ipv4?.geo_ip?.city != null
+  - script:
+      tag: script_indicator_geo_region_name_8c0e2a4b
+      lang: painless
+      description: The first administrative subdivision becomes the region name.
+      if: ctx.intel471.indicator.data?.ipv4?.geo_ip?.subdivision instanceof List && !ctx.intel471.indicator.data.ipv4.geo_ip.subdivision.isEmpty()
+      source: |
+        ctx.threat.indicator.geo = ctx.threat.indicator.geo ?: [:];
+        ctx.threat.indicator.geo.region_name = ctx.intel471.indicator.data.ipv4.geo_ip.subdivision[0];
+  - grok:
+      tag: grok_autonomous_system_9d1f3b5c
+      field: intel471.indicator.data.ipv4.geo_ip.isp.autonomous_system
+      # NONNEGINT is wrapped in \b, which can't match between "AS" and the digits.
+      pattern_definitions:
+        ASN: '[0-9]+'
+      patterns:
+        - '^AS%{ASN:threat.indicator.as.number:long}(?:\s+%{GREEDYDATA:threat.indicator.as.organization.name})?$'
+      ignore_missing: true
+      if: ctx.intel471.indicator.data?.ipv4?.geo_ip?.isp?.autonomous_system != null
+      on_failure:
+        - append:
+            tag: append_error_grok_as_0e2a4c6d
+            field: error.message
+            value: 'Unrecognised autonomous_system value: {{{intel471.indicator.data.ipv4.geo_ip.isp.autonomous_system}}}'
+
+  # file
+  - set:
+      tag: set_indicator_file_md5_1f3b5d7e
+      field: threat.indicator.file.hash.md5
+      copy_from: intel471.indicator.data.file.md5
+      if: ctx.intel471.indicator.data?.file?.md5 != null
+  - set:
+      tag: set_indicator_file_sha1_2a4c6e8f
+      field: threat.indicator.file.hash.sha1
+      copy_from: intel471.indicator.data.file.sha1
+      if: ctx.intel471.indicator.data?.file?.sha1 != null
+  - set:
+      tag: set_indicator_file_sha256_3b5d7f9a
+      field: threat.indicator.file.hash.sha256
+      copy_from: intel471.indicator.data.file.sha256
+      if: ctx.intel471.indicator.data?.file?.sha256 != null
+  - set:
+      tag: set_indicator_file_ssdeep_4c6e8a0b
+      field: threat.indicator.file.hash.ssdeep
+      copy_from: intel471.indicator.data.file.ssdeep
+      if: ctx.intel471.indicator.data?.file?.ssdeep != null
+  - set:
+      tag: set_indicator_file_size_5d7f9b1c
+      field: threat.indicator.file.size
+      copy_from: intel471.indicator.data.file.size
+      if: ctx.intel471.indicator.data?.file?.size != null
+  - foreach:
+      tag: foreach_related_hash_6e8a0c2d
+      field: threat.indicator.file.hash
+      if: ctx.threat?.indicator?.file?.hash instanceof Map
+      processor:
+        append:
+          tag: append_related_hash_7f9b1d3e
+          field: related.hash
+          value: '{{{_ingest._value}}}'
+          allow_duplicates: false
+  - script:
+      tag: script_indicator_name_file_8a0c2e4f
+      lang: painless
+      description: Name a file indicator after its strongest hash.
+      if: ctx.threat?.indicator?.file?.hash instanceof Map
+      source: |
+        def h = ctx.threat.indicator.file.hash;
+        def n = h.sha256 ?: (h.sha1 ?: h.md5);
+        if (n != null) { ctx.threat.indicator.name = n; }
+
+  # yara
+  - set:
+      tag: set_indicator_name_yara_9b1d3f5a
+      field: threat.indicator.name
+      copy_from: intel471.indicator.data.yara.title
+      if: ctx.intel471.indicator.data?.yara?.title != null
+
+  ##################
+  # Threat context #
+  ##################
+  - set:
+      tag: set_threat_software_name_from_family_0c2e4a6b
+      field: threat.software.name
+      copy_from: intel471.indicator.threat.data.malware_family.name
+      if: ctx.intel471.indicator.threat?.data?.malware_family?.name != null
+  - set:
+      tag: set_threat_software_name_from_malware_1d3f5b7c
+      field: threat.software.name
+      copy_from: intel471.indicator.threat.data.malware.family
+      if: ctx.threat.software?.name == null && ctx.intel471.indicator.threat?.data?.malware?.family != null
+  - set:
+      tag: set_threat_software_type_2e4a6c8d
+      field: threat.software.type
+      value: Malware
+      if: ctx.threat.software?.name != null
+  - script:
+      tag: script_threat_tactic_3f5b7d9e
+      lang: painless
+      description: Map MITRE ATT&CK kill chain phases onto threat.tactic.
+      if: ctx.intel471.indicator.kill_chain_phases instanceof List
+      params:
+        tactics:
+          reconnaissance: [TA0043, Reconnaissance]
+          resource_development: [TA0042, Resource Development]
+          initial_access: [TA0001, Initial Access]
+          execution: [TA0002, Execution]
+          persistence: [TA0003, Persistence]
+          privilege_escalation: [TA0004, Privilege Escalation]
+          defense_evasion: [TA0005, Defense Evasion]
+          credential_access: [TA0006, Credential Access]
+          discovery: [TA0007, Discovery]
+          lateral_movement: [TA0008, Lateral Movement]
+          collection: [TA0009, Collection]
+          command_and_control: [TA0011, Command and Control]
+          exfiltration: [TA0010, Exfiltration]
+          impact: [TA0040, Impact]
+      source: |
+        def ids = new ArrayList();
+        def names = new ArrayList();
+        for (def p : ctx.intel471.indicator.kill_chain_phases) {
+          if (p == null || p.kill_chain_name != 'mitre-attack' || p.phase_name == null) { continue; }
+          def t = params.tactics.get(p.phase_name.replace('-', '_'));
+          if (t != null && !ids.contains(t[0])) { ids.add(t[0]); names.add(t[1]); }
+        }
+        if (!ids.isEmpty()) {
+          ctx.threat.framework = 'MITRE ATT&CK';
+          ctx.threat.tactic = ['id': ids, 'name': names];
+        }
+
+  ##################
+  # IOC expiration #
+  ##################
+  # The latest IOC transform deletes an indicator once intel471.indicator.ioc_expired_at
+  # is in the past. Revoked indicators expire at ingest; otherwise the API's
+  # expiration_ts is used, falling back to last seen + ioc_expiration_duration.
+  - convert:
+      tag: convert_revoked_to_boolean_3c5e7a9b
+      field: intel471.indicator.revocation.revoked
+      type: boolean
+      ignore_missing: true
+      description: The spec says boolean; also accept "true"/"false" strings.
+  - set:
+      tag: set_ioc_expired_at_revoked_4a6c8e0f
+      field: intel471.indicator.ioc_expired_at
+      value: '{{{_ingest.timestamp}}}'
+      if: ctx.intel471.indicator.revocation?.revoked == true
+  - set:
+      tag: set_ioc_expiration_reason_revoked_5b7d9f1a
+      field: intel471.indicator.ioc_expiration_reason
+      value: revoked
+      if: ctx.intel471.indicator.revocation?.revoked == true
+  - set:
+      tag: set_ioc_expired_at_expiration_ts_6c8e0a2b
+      field: intel471.indicator.ioc_expired_at
+      copy_from: intel471.indicator.expiration_ts
+      if: ctx.intel471.indicator.ioc_expired_at == null && ctx.intel471.indicator.expiration_ts != null
+  - set:
+      tag: set_ioc_expiration_reason_expiration_ts_7d9f1b3c
+      field: intel471.indicator.ioc_expiration_reason
+      value: expiration_ts
+      if: ctx.intel471.indicator.ioc_expiration_reason == null && ctx.intel471.indicator.ioc_expired_at != null
+  - script:
+      tag: script_ioc_expired_at_default_8e0a2c4d
+      lang: painless
+      description: Fallback expiry for indicators without expiration_ts.
+      if: ctx.intel471.indicator.ioc_expired_at == null && ctx._conf?.ioc_expiration_duration != null
+      source: |
+        def m = /^(\d+)([dhm])$/.matcher(ctx._conf.ioc_expiration_duration.toString().trim());
+        if (!m.matches()) {
+          throw new IllegalArgumentException('invalid ioc_expiration_duration: ' + ctx._conf.ioc_expiration_duration);
+        }
+        long n = Long.parseLong(m.group(1));
+        String u = m.group(2);
+        def base = ZonedDateTime.parse(ctx.threat?.indicator?.last_seen ?: ctx['@timestamp']);
+        def exp = u == 'd' ? base.plusDays(n) : (u == 'h' ? base.plusHours(n) : base.plusMinutes(n));
+        ctx.intel471.indicator.ioc_expired_at = exp.toString();
+        ctx.intel471.indicator.ioc_expiration_reason = 'Expiration set from ioc_expiration_duration: ' + ctx._conf.ioc_expiration_duration;
+
+  ###########
+  # Cleanup #
+  ###########
+  - remove:
+      tag: remove_conf_9f1b3d5e
+      field: _conf
+      ignore_missing: true
+  - remove:
+      tag: remove_duplicate_custom_fields_0a2c4e6f
+      description: These values have been copied to ECS fields.
+      if: ctx.tags == null || !ctx.tags.contains('preserve_duplicate_custom_fields')
+      ignore_missing: true
+      field:
+        - intel471.indicator.id
+        - intel471.indicator.description
+        - intel471.indicator.activity
+        - intel471.indicator.data.domain
+        - intel471.indicator.data.email
+        - intel471.indicator.data.url
+        - intel471.indicator.data.ipv4.ip_address
+        - intel471.indicator.data.ipv4.geo_ip.country
+        - intel471.indicator.data.ipv4.geo_ip.country_code
+        - intel471.indicator.data.ipv4.geo_ip.city
+        - intel471.indicator.data.file.md5
+        - intel471.indicator.data.file.sha1
+        - intel471.indicator.data.file.sha256
+        - intel471.indicator.data.file.ssdeep
+        - intel471.indicator.data.file.size
+  - remove:
+      tag: remove_event_original_1b3d5f7a
+      field: event.original
+      ignore_missing: true
+      if: ctx.tags == null || !ctx.tags.contains('preserve_original_event')
+  - script:
+      tag: script_drop_null_empty_values_2c4e6a8b
+      description: Drops null/empty values recursively.
+      lang: painless
+      source: |
+        boolean dropEmptyFields(Object object) {
+          if (object == null || object == "") {
+            return true;
+          } else if (object instanceof Map) {
+            ((Map) object).values().removeIf(value -> dropEmptyFields(value));
+            return (((Map) object).size() == 0);
+          } else if (object instanceof List) {
+            ((List) object).removeIf(value -> dropEmptyFields(value));
+            return (((List) object).length == 0);
+          }
+          return false;
+        }
+        dropEmptyFields(ctx);
+  - set:
+      tag: set_pipeline_error_to_event_kind_3d5f7b9c
+      field: event.kind
+      value: pipeline_error
+      if: ctx.error?.message != null
+  - append:
+      tag: append_preserve_original_event_on_error_4e6a8c0d
+      field: tags
+      value: preserve_original_event
+      allow_duplicates: false
+      if: ctx.error?.message != null
+
+on_failure:
+  - append:
+      tag: append_error_message_5f7b9d1e
+      field: error.message
+      value: >-
+        Processor "{{{ _ingest.on_failure_processor_type }}}"
+        with tag "{{{ _ingest.on_failure_processor_tag }}}"
+        in pipeline "{{{ _ingest.on_failure_pipeline }}}"
+        failed with message "{{{ _ingest.on_failure_message }}}"
+  - set:
+      tag: set_event_kind_on_failure_6a8c0e2f
+      field: event.kind
+      value: pipeline_error
+  - append:
+      tag: append_tags_on_failure_7b9d1f3a
+      field: tags
+      value: preserve_original_event
+      allow_duplicates: false

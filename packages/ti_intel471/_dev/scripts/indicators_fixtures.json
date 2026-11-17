@@ -1,0 +1,1097 @@
+[
+  {
+    "activity": {
+      "first_seen_ts": "2026-11-09T08:31:23Z",
+      "last_seen_ts": "2026-11-09T13:31:08Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Remote access trojan (RAT) malware",
+          "path": "1.1.3"
+        },
+        {
+          "name": "Banking trojan malware",
+          "path": "1.1.4"
+        },
+        {
+          "name": "Information-stealer malware",
+          "path": "1.1.5"
+        },
+        {
+          "name": "Windows",
+          "path": "1.4.1"
+        }
+      ]
+    },
+    "confidence": 85,
+    "data": {
+      "domain": "domain-1.example"
+    },
+    "description": "grandoreiro controller DGA Domain",
+    "expiration_ts": "2026-12-09T13:31:08Z",
+    "id": "malware-indicator--00000000-0000-5000-8000-000000000001",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "command_and_control"
+      }
+    ],
+    "pattern": "[domain-name:value = 'domain-1.example']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "malware": {
+          "family": "grandoreiro",
+          "id": "malware--00000000-0000-5000-8000-000000000001",
+          "variant": "variant_d"
+        },
+        "malware_family": {
+          "id": "malware-family--00000000-0000-5000-8000-000000000001",
+          "name": "grandoreiro"
+        }
+      },
+      "type": "malware"
+    },
+    "type": "domain"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-11-09T08:31:23Z",
+      "last_seen_ts": "2026-11-09T13:31:08Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Remote access trojan (RAT) malware",
+          "path": "1.1.3"
+        },
+        {
+          "name": "Banking trojan malware",
+          "path": "1.1.4"
+        },
+        {
+          "name": "Information-stealer malware",
+          "path": "1.1.5"
+        },
+        {
+          "name": "Windows",
+          "path": "1.4.1"
+        }
+      ]
+    },
+    "confidence": 85,
+    "data": {
+      "domain": "domain-2.example"
+    },
+    "description": "grandoreiro controller DGA Domain",
+    "expiration_ts": "2026-12-09T13:31:08Z",
+    "id": "malware-indicator--00000000-0000-5000-8000-000000000002",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "command_and_control"
+      }
+    ],
+    "pattern": "[domain-name:value = 'domain-2.example']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "malware": {
+          "family": "grandoreiro",
+          "id": "malware--00000000-0000-5000-8000-000000000001",
+          "variant": "variant_d"
+        },
+        "malware_family": {
+          "id": "malware-family--00000000-0000-5000-8000-000000000001",
+          "name": "grandoreiro"
+        }
+      },
+      "type": "malware"
+    },
+    "type": "domain"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-11-03T02:36:12Z",
+      "last_seen_ts": "2026-11-08T17:21:25Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Information-stealer malware",
+          "path": "1.1.5"
+        },
+        {
+          "name": "Windows",
+          "path": "1.4.1"
+        }
+      ]
+    },
+    "confidence": 85,
+    "data": {
+      "email": "user-1@domain-3.example"
+    },
+    "description": "agent_tesla exfiltration email receiver",
+    "expiration_ts": "2027-02-06T17:21:25Z",
+    "id": "malware-indicator--00000000-0000-5000-8000-000000000003",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "exfiltration"
+      }
+    ],
+    "pattern": "[email-addr:value = 'user-1@domain-3.example']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "malware": {
+          "family": "agent_tesla",
+          "id": "malware--00000000-0000-5000-8000-000000000002",
+          "variant": "v3_variant_h"
+        },
+        "malware_family": {
+          "id": "malware-family--00000000-0000-5000-8000-000000000002",
+          "name": "agent_tesla"
+        }
+      },
+      "type": "malware"
+    },
+    "type": "email"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-11-03T02:36:12Z",
+      "last_seen_ts": "2026-11-08T17:21:25Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Information-stealer malware",
+          "path": "1.1.5"
+        },
+        {
+          "name": "Windows",
+          "path": "1.4.1"
+        }
+      ]
+    },
+    "confidence": 85,
+    "data": {
+      "email": "user-2@domain-3.example"
+    },
+    "description": "agent_tesla exfiltration email credentials",
+    "expiration_ts": "2027-02-06T17:21:25Z",
+    "id": "malware-indicator--00000000-0000-5000-8000-000000000004",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "exfiltration"
+      }
+    ],
+    "pattern": "[email-addr:value = 'user-2@domain-3.example']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "malware": {
+          "family": "agent_tesla",
+          "id": "malware--00000000-0000-5000-8000-000000000002",
+          "variant": "v3_variant_h"
+        },
+        "malware_family": {
+          "id": "malware-family--00000000-0000-5000-8000-000000000002",
+          "name": "agent_tesla"
+        }
+      },
+      "type": "malware"
+    },
+    "type": "email"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-03-16T04:24:33Z",
+      "last_seen_ts": "2026-11-08T17:22:32Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Information-stealer malware",
+          "path": "1.1.5"
+        },
+        {
+          "name": "Windows",
+          "path": "1.4.1"
+        }
+      ]
+    },
+    "confidence": 85,
+    "data": {
+      "email": "user-3@domain-4.example"
+    },
+    "description": "agent_tesla exfiltration email receiver",
+    "expiration_ts": "2027-02-06T17:22:32Z",
+    "id": "malware-indicator--00000000-0000-5000-8000-000000000005",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "exfiltration"
+      }
+    ],
+    "pattern": "[email-addr:value = 'user-3@domain-4.example']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "malware": {
+          "family": "agent_tesla",
+          "id": "malware--00000000-0000-5000-8000-000000000003",
+          "variant": "v3_variant_g"
+        },
+        "malware_family": {
+          "id": "malware-family--00000000-0000-5000-8000-000000000002",
+          "name": "agent_tesla"
+        }
+      },
+      "type": "malware"
+    },
+    "type": "email"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-11-08T15:02:18Z",
+      "last_seen_ts": "2026-11-08T15:02:18Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Remote access trojan (RAT) malware",
+          "path": "1.1.3"
+        },
+        {
+          "name": "Windows",
+          "path": "1.4.1"
+        }
+      ]
+    },
+    "confidence": 85,
+    "data": {
+      "file": {
+        "md5": "3524ff4e84bc9a63522832e83be44967",
+        "sha1": "ed5076ea25b196738f80980296f7d59372451719",
+        "sha256": "471730abf869bffeb347043fdc50929625c157975db1999b8b3b0e2995612e7e",
+        "size": 95232,
+        "ssdeep": "768:uw8HVYS6oXuDq2pZ7c1hvEX5:pexRejGi",
+        "type": "PEEXE_x86"
+      }
+    },
+    "description": "sample of njrat malware family",
+    "expiration_ts": "2027-11-08T15:02:18Z",
+    "id": "malware-indicator--00000000-0000-5000-8000-000000000006",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "command_and_control"
+      }
+    ],
+    "pattern": "[file:hashes.'SHA-256' = '471730abf869bffeb347043fdc50929625c157975db1999b8b3b0e2995612e7e' OR file:hashes.'SHA-1' = 'ed5076ea25b196738f80980296f7d59372451719' OR file:hashes.MD5 = '3524ff4e84bc9a63522832e83be44967' OR file:hashes.SSDEEP = '768:uw8HVYS6oXuDq2pZ7c1hvEX5:pexRejGi']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "malware": {
+          "family": "njrat",
+          "id": "malware--00000000-0000-5000-8000-000000000004",
+          "version": "0.7d"
+        },
+        "malware_family": {
+          "id": "malware-family--00000000-0000-5000-8000-000000000003",
+          "name": "njrat"
+        }
+      },
+      "type": "malware"
+    },
+    "type": "file"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-11-08T15:02:20Z",
+      "last_seen_ts": "2026-11-08T15:02:20Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Information-stealer malware",
+          "path": "1.1.5"
+        },
+        {
+          "name": "Loader malware",
+          "path": "1.1.6"
+        },
+        {
+          "name": "Windows",
+          "path": "1.4.1"
+        }
+      ]
+    },
+    "confidence": 85,
+    "data": {
+      "file": {
+        "md5": "5386e267a1959df992d4910688260580",
+        "sha1": "694622490dbfbf9b7335c25ad45cfdc08038a8b5",
+        "sha256": "b7223ae9871a646e87e08e24baeff1c6eaa46876b9539dc4d377e4d55dadb5a7",
+        "size": 2455552,
+        "ssdeep": "24576:GaZMWd6Im14PCs6tyj/jGIGH:2W0eMsKE",
+        "type": "PEEXE_x86"
+      }
+    },
+    "description": "sample of xred malware family",
+    "expiration_ts": "2027-11-08T15:02:20Z",
+    "id": "malware-indicator--00000000-0000-5000-8000-000000000007",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "command_and_control"
+      }
+    ],
+    "pattern": "[file:hashes.'SHA-256' = 'b7223ae9871a646e87e08e24baeff1c6eaa46876b9539dc4d377e4d55dadb5a7' OR file:hashes.'SHA-1' = '694622490dbfbf9b7335c25ad45cfdc08038a8b5' OR file:hashes.MD5 = '5386e267a1959df992d4910688260580' OR file:hashes.SSDEEP = '24576:GaZMWd6Im14PCs6tyj/jGIGH:2W0eMsKE']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "malware": {
+          "family": "xred",
+          "id": "malware--00000000-0000-5000-8000-000000000005"
+        },
+        "malware_family": {
+          "id": "malware-family--00000000-0000-5000-8000-000000000004",
+          "name": "xred"
+        }
+      },
+      "type": "malware"
+    },
+    "type": "file"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-11-08T15:02:42Z",
+      "last_seen_ts": "2026-11-08T15:02:42Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Remote access trojan (RAT) malware",
+          "path": "1.1.3"
+        },
+        {
+          "name": "Windows",
+          "path": "1.4.1"
+        }
+      ]
+    },
+    "confidence": 85,
+    "data": {
+      "file": {
+        "md5": "7f6c4eb9722b5cc1d81df50589815a62",
+        "sha1": "f43143b902f571e9064a680ded0e51ebc379c14f",
+        "sha256": "6b18459e25b755dc693c5b0fe171d8498095adb9ae3af9930656415f1bbb8a37",
+        "size": 1313280,
+        "ssdeep": "24576:qzETQOA2SkLH5ZnGWrQM3q42:glbcIfpO",
+        "type": "PEEXE_x86"
+      }
+    },
+    "description": "sample of gh0strat malware family",
+    "expiration_ts": "2027-11-08T15:02:42Z",
+    "id": "malware-indicator--00000000-0000-5000-8000-000000000008",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "command_and_control"
+      }
+    ],
+    "pattern": "[file:hashes.'SHA-256' = '6b18459e25b755dc693c5b0fe171d8498095adb9ae3af9930656415f1bbb8a37' OR file:hashes.'SHA-1' = 'f43143b902f571e9064a680ded0e51ebc379c14f' OR file:hashes.MD5 = '7f6c4eb9722b5cc1d81df50589815a62' OR file:hashes.SSDEEP = '24576:qzETQOA2SkLH5ZnGWrQM3q42:glbcIfpO']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "malware": {
+          "family": "gh0strat",
+          "id": "malware--00000000-0000-5000-8000-000000000006"
+        },
+        "malware_family": {
+          "id": "malware-family--00000000-0000-5000-8000-000000000005",
+          "name": "gh0strat"
+        }
+      },
+      "type": "malware"
+    },
+    "type": "file"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-11-07T21:20:53Z",
+      "last_seen_ts": "2026-11-08T16:35:37Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Remote access trojan (RAT) malware",
+          "path": "1.1.3"
+        },
+        {
+          "name": "Windows",
+          "path": "1.4.1"
+        }
+      ]
+    },
+    "confidence": 50,
+    "data": {
+      "ipv4": {
+        "geo_ip": {
+          "city": "Chlef",
+          "country": "Algeria",
+          "country_code": "DZ",
+          "isp": {
+            "autonomous_system": "AS64496 Example Networks 1",
+            "isp": "Example ISP 1",
+            "network": "10.16.0.0/12",
+            "organization": "Example ISP 1"
+          },
+          "subdivision": [
+            "Chlef"
+          ]
+        },
+        "ip_address": "10.18.0.1"
+      }
+    },
+    "description": "njrat controller IPv4",
+    "expiration_ts": "2026-12-08T16:35:37Z",
+    "id": "malware-indicator--00000000-0000-5000-8000-000000000009",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "command_and_control"
+      }
+    ],
+    "pattern": "[ipv4-addr:value = '10.18.0.1']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "malware": {
+          "family": "njrat",
+          "id": "malware--00000000-0000-5000-8000-000000000004",
+          "version": "0.7d"
+        },
+        "malware_family": {
+          "id": "malware-family--00000000-0000-5000-8000-000000000003",
+          "name": "njrat"
+        }
+      },
+      "type": "malware"
+    },
+    "type": "ipv4"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-11-08T16:43:21Z",
+      "last_seen_ts": "2026-11-08T16:43:21Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Mobile malware",
+          "path": "1.1.2"
+        },
+        {
+          "name": "Banking trojan malware",
+          "path": "1.1.4"
+        },
+        {
+          "name": "Android",
+          "path": "1.4.4"
+        }
+      ]
+    },
+    "confidence": 50,
+    "data": {
+      "ipv4": {
+        "geo_ip": {
+          "city": "Lelystad",
+          "country": "The Netherlands",
+          "country_code": "NL",
+          "isp": {
+            "autonomous_system": "AS64497 Example Networks 2",
+            "isp": "Example ISP 2",
+            "network": "10.18.0.0/24",
+            "organization": "Example ISP 2"
+          },
+          "subdivision": [
+            "Flevoland"
+          ]
+        },
+        "ip_address": "10.18.0.2"
+      }
+    },
+    "description": "btmob controller IPv4",
+    "expiration_ts": "2026-12-08T16:43:21Z",
+    "id": "malware-indicator--00000000-0000-5000-8000-000000000010",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "command_and_control"
+      }
+    ],
+    "pattern": "[ipv4-addr:value = '10.18.0.2']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "malware": {
+          "family": "btmob",
+          "id": "malware--00000000-0000-5000-8000-000000000007"
+        },
+        "malware_family": {
+          "id": "malware-family--00000000-0000-5000-8000-000000000006",
+          "name": "btmob"
+        }
+      },
+      "type": "malware"
+    },
+    "type": "ipv4"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-10-15T13:37:13Z",
+      "last_seen_ts": "2026-11-08T17:32:30Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Mobile malware",
+          "path": "1.1.2"
+        },
+        {
+          "name": "Banking trojan malware",
+          "path": "1.1.4"
+        },
+        {
+          "name": "Android",
+          "path": "1.4.4"
+        }
+      ]
+    },
+    "confidence": 50,
+    "data": {
+      "ipv4": {
+        "geo_ip": {
+          "country": "United States",
+          "country_code": "US",
+          "isp": {
+            "autonomous_system": "AS64498 Example Networks 3",
+            "isp": "Example ISP 3",
+            "network": "10.18.0.0/21",
+            "organization": "Example ISP 3"
+          }
+        },
+        "ip_address": "10.18.0.3"
+      }
+    },
+    "description": "btmob controller IPv4",
+    "expiration_ts": "2026-12-08T17:32:30Z",
+    "id": "malware-indicator--00000000-0000-5000-8000-000000000011",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "command_and_control"
+      }
+    ],
+    "pattern": "[ipv4-addr:value = '10.18.0.3']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "malware": {
+          "family": "btmob",
+          "id": "malware--00000000-0000-5000-8000-000000000008",
+          "version": "BT-v4.5.7"
+        },
+        "malware_family": {
+          "id": "malware-family--00000000-0000-5000-8000-000000000006",
+          "name": "btmob"
+        }
+      },
+      "type": "malware"
+    },
+    "type": "ipv4"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-11-08T15:02:42Z",
+      "last_seen_ts": "2026-11-08T15:02:42Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Remote access trojan (RAT) malware",
+          "path": "1.1.3"
+        },
+        {
+          "name": "Windows",
+          "path": "1.4.1"
+        }
+      ]
+    },
+    "confidence": 50,
+    "data": {
+      "url": "tcp://domain-5.example:8080"
+    },
+    "description": "gh0strat controller URL",
+    "expiration_ts": "2026-12-08T15:02:42Z",
+    "id": "malware-indicator--00000000-0000-5000-8000-000000000012",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "command_and_control"
+      }
+    ],
+    "pattern": "[url:value = 'tcp://domain-5.example:8080']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "malware": {
+          "family": "gh0strat",
+          "id": "malware--00000000-0000-5000-8000-000000000006"
+        },
+        "malware_family": {
+          "id": "malware-family--00000000-0000-5000-8000-000000000005",
+          "name": "gh0strat"
+        }
+      },
+      "type": "malware"
+    },
+    "type": "url"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2021-04-19T16:11:07Z",
+      "last_seen_ts": "2026-11-08T15:03:56Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Information-stealer malware",
+          "path": "1.1.5"
+        },
+        {
+          "name": "Loader malware",
+          "path": "1.1.6"
+        }
+      ]
+    },
+    "confidence": 85,
+    "data": {
+      "url": "http://domain-6.example/"
+    },
+    "description": "smokeloader controller URL",
+    "expiration_ts": "2026-12-08T15:03:56Z",
+    "id": "malware-indicator--00000000-0000-5000-8000-000000000013",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "command_and_control"
+      }
+    ],
+    "pattern": "[url:value = 'http://domain-6.example/']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "malware": {
+          "family": "smokeloader",
+          "id": "malware--00000000-0000-5000-8000-000000000009",
+          "version": "2020"
+        },
+        "malware_family": {
+          "id": "malware-family--00000000-0000-5000-8000-000000000007",
+          "name": "smokeloader"
+        }
+      },
+      "type": "malware"
+    },
+    "type": "url"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-11-08T15:10:44Z",
+      "last_seen_ts": "2026-11-08T15:10:44Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Remote access trojan (RAT) malware",
+          "path": "1.1.3"
+        },
+        {
+          "name": "Windows",
+          "path": "1.4.1"
+        }
+      ]
+    },
+    "confidence": 50,
+    "data": {
+      "url": "tcp://domain-7.example:8080"
+    },
+    "description": "remcos controller URL",
+    "expiration_ts": "2026-12-08T15:10:44Z",
+    "id": "malware-indicator--00000000-0000-5000-8000-000000000014",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "command_and_control"
+      }
+    ],
+    "pattern": "[url:value = 'tcp://domain-7.example:8080']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "malware": {
+          "family": "remcos",
+          "id": "malware--00000000-0000-5000-8000-000000000010",
+          "version": "7.3.1 Pro"
+        },
+        "malware_family": {
+          "id": "malware-family--00000000-0000-5000-8000-000000000008",
+          "name": "remcos"
+        }
+      },
+      "type": "malware"
+    },
+    "type": "url"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-10-27T11:59:21Z",
+      "last_seen_ts": "2026-10-27T11:59:21Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Remote access trojan (RAT) malware",
+          "path": "1.1.3"
+        },
+        {
+          "name": "Information-stealer malware",
+          "path": "1.1.5"
+        }
+      ]
+    },
+    "confidence": 85,
+    "data": {
+      "yara": {
+        "signature": "rule fixture_rule_1\n{\n    meta:\n        author = \"fixture\"\n        description = \"Dummy rule 1\"\n\n    strings:\n        $s1 = \"fixture-string-1\" ascii wide\n\n    condition:\n        $s1\n}\n",
+        "title": "fixture_rule_1"
+      }
+    },
+    "id": "malware-indicator--00000000-0000-5000-8000-000000000015",
+    "pattern": "rule fixture_rule_1\n{\n    meta:\n        author = \"fixture\"\n        description = \"Dummy rule 1\"\n\n    strings:\n        $s1 = \"fixture-string-1\" ascii wide\n\n    condition:\n        $s1\n}\n",
+    "pattern_type": "yara",
+    "pattern_version": "4",
+    "threat": {
+      "data": {
+        "malware_family": {
+          "id": "malware-family--00000000-0000-5000-8000-000000000009",
+          "name": "violetrat"
+        }
+      },
+      "type": "malware"
+    },
+    "type": "yara"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-09-27T09:12:20Z",
+      "last_seen_ts": "2026-11-08T17:53:47Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Bulletproof hosting (BPH) services",
+          "path": "3.1.1"
+        }
+      ]
+    },
+    "confidence": 85,
+    "data": {
+      "domain": "domain-8.example"
+    },
+    "description": "Bulletproof hosting infrastructure provided by: ccweb",
+    "expiration_ts": "2026-11-10T05:53:47Z",
+    "id": "bph-indicator--00000000-0000-5000-8000-000000000001",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "resource_development"
+      }
+    ],
+    "pattern": "[domain-name:value = 'domain-8.example']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "bulletproof_hosting": {
+          "provider": "ccweb"
+        }
+      },
+      "type": "bulletproof_hosting"
+    },
+    "type": "domain"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-03-03T05:05:55Z",
+      "last_seen_ts": "2026-11-08T19:20:04Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Bulletproof hosting (BPH) services",
+          "path": "3.1.1"
+        }
+      ]
+    },
+    "confidence": 85,
+    "data": {
+      "domain": "domain-9.example"
+    },
+    "description": "Bulletproof hosting infrastructure provided by: ccweb",
+    "expiration_ts": "2026-11-10T05:55:22Z",
+    "id": "bph-indicator--00000000-0000-5000-8000-000000000002",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "resource_development"
+      }
+    ],
+    "pattern": "[domain-name:value = 'domain-9.example']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "bulletproof_hosting": {
+          "provider": "ccweb"
+        }
+      },
+      "type": "bulletproof_hosting"
+    },
+    "type": "domain"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-09-24T05:23:45Z",
+      "last_seen_ts": "2026-11-08T17:53:46Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Bulletproof hosting (BPH) services",
+          "path": "3.1.1"
+        }
+      ]
+    },
+    "confidence": 85,
+    "data": {
+      "domain": "domain-10.example"
+    },
+    "description": "Bulletproof hosting infrastructure provided by: ccweb",
+    "expiration_ts": "2026-11-10T05:53:46Z",
+    "id": "bph-indicator--00000000-0000-5000-8000-000000000003",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "resource_development"
+      }
+    ],
+    "pattern": "[domain-name:value = 'domain-10.example']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "bulletproof_hosting": {
+          "provider": "ccweb"
+        }
+      },
+      "type": "bulletproof_hosting"
+    },
+    "type": "domain"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-09-25T09:00:09Z",
+      "last_seen_ts": "2026-11-08T23:00:32Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Bulletproof hosting (BPH) services",
+          "path": "3.1.1"
+        }
+      ]
+    },
+    "confidence": 85,
+    "data": {
+      "ipv4": {
+        "geo_ip": {
+          "city": "Banfield",
+          "country": "Argentina",
+          "country_code": "AR",
+          "isp": {
+            "autonomous_system": "AS64499 Example Networks 4",
+            "isp": "Example ISP 4",
+            "network": "10.18.0.0/20",
+            "organization": "Example ISP 4"
+          },
+          "subdivision": [
+            "Buenos Aires"
+          ]
+        },
+        "ip_address": "10.18.0.4"
+      }
+    },
+    "description": "Bulletproof hosting infrastructure provided by: ccweb",
+    "expiration_ts": "2026-11-10T11:00:32Z",
+    "id": "bph-indicator--00000000-0000-5000-8000-000000000004",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "resource_development"
+      }
+    ],
+    "pattern": "[ipv4-addr:value = '10.18.0.4']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "bulletproof_hosting": {
+          "provider": "ccweb"
+        }
+      },
+      "type": "bulletproof_hosting"
+    },
+    "type": "ipv4"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-05-06T11:00:09Z",
+      "last_seen_ts": "2026-11-08T23:00:31Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Bulletproof hosting (BPH) services",
+          "path": "3.1.1"
+        }
+      ]
+    },
+    "confidence": 85,
+    "data": {
+      "ipv4": {
+        "geo_ip": {
+          "country": "Egypt",
+          "country_code": "EG",
+          "isp": {
+            "autonomous_system": "AS64500 Example Networks 5",
+            "isp": "Example ISP 5",
+            "network": "10.18.0.0/17",
+            "organization": "Example ISP 5"
+          },
+          "subdivision": [
+            "Qalyubia"
+          ]
+        },
+        "ip_address": "10.18.0.5"
+      }
+    },
+    "description": "Bulletproof hosting infrastructure provided by: ccweb",
+    "expiration_ts": "2026-11-10T11:00:31Z",
+    "id": "bph-indicator--00000000-0000-5000-8000-000000000005",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "resource_development"
+      }
+    ],
+    "pattern": "[ipv4-addr:value = '10.18.0.5']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "bulletproof_hosting": {
+          "provider": "ccweb"
+        }
+      },
+      "type": "bulletproof_hosting"
+    },
+    "type": "ipv4"
+  },
+  {
+    "activity": {
+      "first_seen_ts": "2026-03-03T15:00:27Z",
+      "last_seen_ts": "2026-11-08T23:00:15Z"
+    },
+    "classification": {
+      "girs": [
+        {
+          "name": "Bulletproof hosting (BPH) services",
+          "path": "3.1.1"
+        }
+      ]
+    },
+    "confidence": 85,
+    "data": {
+      "ipv4": {
+        "geo_ip": {
+          "city": "Kingston",
+          "country": "Jamaica",
+          "country_code": "JM",
+          "isp": {
+            "autonomous_system": "AS64501 Example Networks 6",
+            "isp": "Example ISP 6",
+            "network": "10.18.0.0/22",
+            "organization": "Example ISP 6"
+          },
+          "subdivision": [
+            "Kingston"
+          ]
+        },
+        "ip_address": "10.18.0.6"
+      }
+    },
+    "description": "Bulletproof hosting infrastructure provided by: ccweb",
+    "expiration_ts": "2026-11-10T11:00:15Z",
+    "id": "bph-indicator--00000000-0000-5000-8000-000000000006",
+    "kill_chain_phases": [
+      {
+        "kill_chain_name": "mitre-attack",
+        "phase_name": "resource_development"
+      }
+    ],
+    "pattern": "[ipv4-addr:value = '10.18.0.6']",
+    "pattern_type": "stix",
+    "pattern_version": "2.1",
+    "threat": {
+      "data": {
+        "bulletproof_hosting": {
+          "provider": "ccweb"
+        }
+      },
+      "type": "bulletproof_hosting"
+    },
+    "type": "ipv4"
+  }
+]

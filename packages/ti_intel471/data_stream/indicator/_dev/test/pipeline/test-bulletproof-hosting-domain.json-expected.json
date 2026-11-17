@@ -1,0 +1,271 @@
+{
+    "expected": [
+        {
+            "@timestamp": "2026-11-08T17:53:47.000Z",
+            "ecs": {
+                "version": "8.17.0"
+            },
+            "event": {
+                "category": [
+                    "threat"
+                ],
+                "id": "bph-indicator--00000000-0000-5000-8000-000000000001",
+                "kind": "enrichment",
+                "original": "{\"activity\": {\"first_seen_ts\": \"2026-09-27T09:12:20Z\", \"last_seen_ts\": \"2026-11-08T17:53:47Z\"}, \"classification\": {\"girs\": [{\"name\": \"Bulletproof hosting (BPH) services\", \"path\": \"3.1.1\"}]}, \"confidence\": 85, \"data\": {\"domain\": \"domain-8.example\"}, \"description\": \"Bulletproof hosting infrastructure provided by: ccweb\", \"expiration_ts\": \"2026-11-10T05:53:47Z\", \"id\": \"bph-indicator--00000000-0000-5000-8000-000000000001\", \"kill_chain_phases\": [{\"kill_chain_name\": \"mitre-attack\", \"phase_name\": \"resource_development\"}], \"pattern\": \"[domain-name:value = 'domain-8.example']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"threat\": {\"data\": {\"bulletproof_hosting\": {\"provider\": \"ccweb\"}}, \"type\": \"bulletproof_hosting\"}, \"type\": \"domain\"}",
+                "type": [
+                    "indicator"
+                ]
+            },
+            "intel471": {
+                "indicator": {
+                    "classification": {
+                        "girs": [
+                            {
+                                "name": "Bulletproof hosting (BPH) services",
+                                "path": "3.1.1"
+                            }
+                        ]
+                    },
+                    "confidence": 85,
+                    "expiration_ts": "2026-11-10T05:53:47.000Z",
+                    "ioc_expiration_reason": "expiration_ts",
+                    "ioc_expired_at": "2026-11-10T05:53:47.000Z",
+                    "kill_chain_phases": [
+                        {
+                            "kill_chain_name": "mitre-attack",
+                            "phase_name": "resource_development"
+                        }
+                    ],
+                    "pattern": "[domain-name:value = 'domain-8.example']",
+                    "pattern_type": "stix",
+                    "pattern_version": "2.1",
+                    "threat": {
+                        "data": {
+                            "bulletproof_hosting": {
+                                "provider": "ccweb"
+                            }
+                        },
+                        "type": "bulletproof_hosting"
+                    },
+                    "type": "domain"
+                }
+            },
+            "related": {
+                "hosts": [
+                    "domain-8.example"
+                ]
+            },
+            "tags": [
+                "preserve_original_event",
+                "forwarded",
+                "intel471-indicator"
+            ],
+            "threat": {
+                "feed": {
+                    "description": "Threat indicators from the Intel 471 Indicators API.",
+                    "name": "Intel 471",
+                    "reference": "https://intel471.com/"
+                },
+                "framework": "MITRE ATT&CK",
+                "indicator": {
+                    "confidence": "High",
+                    "description": "Bulletproof hosting infrastructure provided by: ccweb",
+                    "first_seen": "2026-09-27T09:12:20.000Z",
+                    "last_seen": "2026-11-08T17:53:47.000Z",
+                    "name": "domain-8.example",
+                    "provider": "Intel 471",
+                    "type": "domain-name",
+                    "url": {
+                        "domain": "domain-8.example"
+                    }
+                },
+                "tactic": {
+                    "id": [
+                        "TA0042"
+                    ],
+                    "name": [
+                        "Resource Development"
+                    ]
+                }
+            }
+        },
+        {
+            "@timestamp": "2026-11-08T19:20:04.000Z",
+            "ecs": {
+                "version": "8.17.0"
+            },
+            "event": {
+                "category": [
+                    "threat"
+                ],
+                "id": "bph-indicator--00000000-0000-5000-8000-000000000002",
+                "kind": "enrichment",
+                "original": "{\"activity\": {\"first_seen_ts\": \"2026-03-03T05:05:55Z\", \"last_seen_ts\": \"2026-11-08T19:20:04Z\"}, \"classification\": {\"girs\": [{\"name\": \"Bulletproof hosting (BPH) services\", \"path\": \"3.1.1\"}]}, \"confidence\": 85, \"data\": {\"domain\": \"domain-9.example\"}, \"description\": \"Bulletproof hosting infrastructure provided by: ccweb\", \"expiration_ts\": \"2026-11-10T05:55:22Z\", \"id\": \"bph-indicator--00000000-0000-5000-8000-000000000002\", \"kill_chain_phases\": [{\"kill_chain_name\": \"mitre-attack\", \"phase_name\": \"resource_development\"}], \"pattern\": \"[domain-name:value = 'domain-9.example']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"threat\": {\"data\": {\"bulletproof_hosting\": {\"provider\": \"ccweb\"}}, \"type\": \"bulletproof_hosting\"}, \"type\": \"domain\"}",
+                "type": [
+                    "indicator"
+                ]
+            },
+            "intel471": {
+                "indicator": {
+                    "classification": {
+                        "girs": [
+                            {
+                                "name": "Bulletproof hosting (BPH) services",
+                                "path": "3.1.1"
+                            }
+                        ]
+                    },
+                    "confidence": 85,
+                    "expiration_ts": "2026-11-10T05:55:22.000Z",
+                    "ioc_expiration_reason": "expiration_ts",
+                    "ioc_expired_at": "2026-11-10T05:55:22.000Z",
+                    "kill_chain_phases": [
+                        {
+                            "kill_chain_name": "mitre-attack",
+                            "phase_name": "resource_development"
+                        }
+                    ],
+                    "pattern": "[domain-name:value = 'domain-9.example']",
+                    "pattern_type": "stix",
+                    "pattern_version": "2.1",
+                    "threat": {
+                        "data": {
+                            "bulletproof_hosting": {
+                                "provider": "ccweb"
+                            }
+                        },
+                        "type": "bulletproof_hosting"
+                    },
+                    "type": "domain"
+                }
+            },
+            "related": {
+                "hosts": [
+                    "domain-9.example"
+                ]
+            },
+            "tags": [
+                "preserve_original_event",
+                "forwarded",
+                "intel471-indicator"
+            ],
+            "threat": {
+                "feed": {
+                    "description": "Threat indicators from the Intel 471 Indicators API.",
+                    "name": "Intel 471",
+                    "reference": "https://intel471.com/"
+                },
+                "framework": "MITRE ATT&CK",
+                "indicator": {
+                    "confidence": "High",
+                    "description": "Bulletproof hosting infrastructure provided by: ccweb",
+                    "first_seen": "2026-03-03T05:05:55.000Z",
+                    "last_seen": "2026-11-08T19:20:04.000Z",
+                    "name": "domain-9.example",
+                    "provider": "Intel 471",
+                    "type": "domain-name",
+                    "url": {
+                        "domain": "domain-9.example"
+                    }
+                },
+                "tactic": {
+                    "id": [
+                        "TA0042"
+                    ],
+                    "name": [
+                        "Resource Development"
+                    ]
+                }
+            }
+        },
+        {
+            "@timestamp": "2026-11-08T17:53:46.000Z",
+            "ecs": {
+                "version": "8.17.0"
+            },
+            "event": {
+                "category": [
+                    "threat"
+                ],
+                "id": "bph-indicator--00000000-0000-5000-8000-000000000003",
+                "kind": "enrichment",
+                "original": "{\"activity\": {\"first_seen_ts\": \"2026-09-24T05:23:45Z\", \"last_seen_ts\": \"2026-11-08T17:53:46Z\"}, \"classification\": {\"girs\": [{\"name\": \"Bulletproof hosting (BPH) services\", \"path\": \"3.1.1\"}]}, \"confidence\": 85, \"data\": {\"domain\": \"domain-10.example\"}, \"description\": \"Bulletproof hosting infrastructure provided by: ccweb\", \"expiration_ts\": \"2026-11-10T05:53:46Z\", \"id\": \"bph-indicator--00000000-0000-5000-8000-000000000003\", \"kill_chain_phases\": [{\"kill_chain_name\": \"mitre-attack\", \"phase_name\": \"resource_development\"}], \"pattern\": \"[domain-name:value = 'domain-10.example']\", \"pattern_type\": \"stix\", \"pattern_version\": \"2.1\", \"threat\": {\"data\": {\"bulletproof_hosting\": {\"provider\": \"ccweb\"}}, \"type\": \"bulletproof_hosting\"}, \"type\": \"domain\"}",
+                "type": [
+                    "indicator"
+                ]
+            },
+            "intel471": {
+                "indicator": {
+                    "classification": {
+                        "girs": [
+                            {
+                                "name": "Bulletproof hosting (BPH) services",
+                                "path": "3.1.1"
+                            }
+                        ]
+                    },
+                    "confidence": 85,
+                    "expiration_ts": "2026-11-10T05:53:46.000Z",
+                    "ioc_expiration_reason": "expiration_ts",
+                    "ioc_expired_at": "2026-11-10T05:53:46.000Z",
+                    "kill_chain_phases": [
+                        {
+                            "kill_chain_name": "mitre-attack",
+                            "phase_name": "resource_development"
+                        }
+                    ],
+                    "pattern": "[domain-name:value = 'domain-10.example']",
+                    "pattern_type": "stix",
+                    "pattern_version": "2.1",
+                    "threat": {
+                        "data": {
+                            "bulletproof_hosting": {
+                                "provider": "ccweb"
+                            }
+                        },
+                        "type": "bulletproof_hosting"
+                    },
+                    "type": "domain"
+                }
+            },
+            "related": {
+                "hosts": [
+                    "domain-10.example"
+                ]
+            },
+            "tags": [
+                "preserve_original_event",
+                "forwarded",
+                "intel471-indicator"
+            ],
+            "threat": {
+                "feed": {
+                    "description": "Threat indicators from the Intel 471 Indicators API.",
+                    "name": "Intel 471",
+                    "reference": "https://intel471.com/"
+                },
+                "framework": "MITRE ATT&CK",
+                "indicator": {
+                    "confidence": "High",
+                    "description": "Bulletproof hosting infrastructure provided by: ccweb",
+                    "first_seen": "2026-09-24T05:23:45.000Z",
+                    "last_seen": "2026-11-08T17:53:46.000Z",
+                    "name": "domain-10.example",
+                    "provider": "Intel 471",
+                    "type": "domain-name",
+                    "url": {
+                        "domain": "domain-10.example"
+                    }
+                },
+                "tactic": {
+                    "id": [
+                        "TA0042"
+                    ],
+                    "name": [
+                        "Resource Development"
+                    ]
+                }
+            }
+        }
+    ]
+}
