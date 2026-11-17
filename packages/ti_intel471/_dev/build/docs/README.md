@@ -19,7 +19,7 @@ indicators usually include geolocation and autonomous system (ASN) details.
 
 ## Data streams
 
-- **indicator**: follows the `/indicators/stream` endpoint.
+- **indicator**: follows the Indicators API stream (`/integrations/indicators/v1/indicators/stream`).
 
 ## Requirements
 

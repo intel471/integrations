@@ -80,7 +80,7 @@ def mock_config(indicators: list[dict]) -> None:
     ]
     # Rules are matched in order, so the cursor-specific ones come first and the
     # first page (no cursor) is the catch-all at the end.
-    lines.append(f"""  - path: /indicators/stream
+    lines.append(f"""  - path: /integrations/indicators/v1/indicators/stream
     methods: [GET]
     query_params:
       cursor: cursor-{len(pages)}
@@ -93,7 +93,7 @@ def mock_config(indicators: list[dict]) -> None:
     for n in range(len(pages), 0, -1):
         body = {"count": len(sample), "cursor_next": f"cursor-{n}", "indicators": pages[n - 1]}
         query = f"\n    query_params:\n      cursor: cursor-{n - 1}" if n > 1 else ""
-        lines.append(f"""  - path: /indicators/stream
+        lines.append(f"""  - path: /integrations/indicators/v1/indicators/stream
     methods: [GET]{query}
     request_headers:
       Authorization: "Basic dGVzdC1jbGllbnQ6dGVzdC1zZWNyZXQ="

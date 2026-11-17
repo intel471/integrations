@@ -41,8 +41,8 @@ policy_templates:
           - name: url
             type: text
             title: API URL
-            description: Base URL of the Intel 471 Indicators API.
-            default: https://api.intel471.cloud/integrations/indicators/v1
+            description: Base URL of the Intel 471 API. Each data stream adds its own endpoint path.
+            default: https://api.intel471.cloud
             multi: false
             required: true
             show_user: false

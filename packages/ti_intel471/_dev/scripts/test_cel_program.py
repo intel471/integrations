@@ -138,6 +138,7 @@ def main() -> None:
         check(len(execs) == 3, f"three pages fetched (got {len(execs)})")
         check([len(events(e)) for e in execs] == [2, 2, 1], "2 + 2 + 1 events")
         check([e["want_more"] for e in execs] == [True, True, False], "stops on the short page")
+        check(all(r["path"] == "/integrations/indicators/v1/indicators/stream" for r in reqs), "Indicators API stream path")
         check("cursor" not in reqs[0]["q"], "no cursor on the very first request")
         check([r["q"].get("cursor") for r in reqs[1:]] == ["c1", "c2"], "cursor_next chained")
         check(len(froms) == 1 and abs(int(froms.pop()) - before) < 60_000, "`from` = now-24h in ms, frozen across pages")

@@ -61,7 +61,7 @@ program: |
     ).as(cur,
       request(
         "GET",
-        state.url.trim_suffix("/") + "/indicators/stream?" + (
+        state.url.trim_suffix("/") + "/integrations/indicators/v1/indicators/stream?" + (
           {
             "from": [cur.from],
             "size": [string(state.page_size)],
