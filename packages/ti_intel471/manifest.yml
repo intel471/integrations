@@ -2,7 +2,7 @@ format_version: "3.4.0"
 name: ti_intel471
 title: Intel 471
 version: "0.1.0"
-description: "Ingest threat intelligence indicators and vulnerability reports from Intel 471 with Elastic Agent."
+description: "Ingest threat indicators, vulnerability reports and compromised credentials from Intel 471 with Elastic Agent."
 type: integration
 source:
   license: "Elastic-2.0"
@@ -27,7 +27,7 @@ icons:
 policy_templates:
   - name: intel471
     title: Intel 471
-    description: Collect threat indicators and vulnerability reports from Intel 471.
+    description: Collect threat indicators, vulnerability reports and compromised credentials from Intel 471.
     deployment_modes:
       default:
         enabled: true

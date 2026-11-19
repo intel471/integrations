@@ -9,6 +9,10 @@ The Intel 471 integration collects threat intelligence from
 - **Vulnerability reports** from the Reports API, indexed as ECS
   `vulnerability` documents: Intel 471's risk assessment of a CVE, with its
   exploitation, proof-of-concept and patch status and underground activity.
+- **Compromised credentials** from the Credentials API: logins related to your
+  organisation found in infostealer logs, combo lists and breaches, with
+  password strength and the infected machine's details. Plaintext passwords
+  are never ingested.
 
 Indicators come in two threat types:
 
@@ -27,15 +31,18 @@ indicators usually include geolocation and autonomous system (ASN) details.
 - **indicator**: follows the Indicators API stream (`/integrations/indicators/v1/indicators/stream`).
 - **vulnerability**: follows the Reports API vulnerability stream
   (`/integrations/intel-report/v1/reports/vulnerability/stream`).
+- **credential**: follows the Credentials API stream
+  (`/integrations/creds/v1/credentials/stream`), one document per unique
+  credential (login, password and accessed domain).
 
-Both data streams use the same API URL and credentials. Disable the one your
+All data streams use the same API URL and credentials. Disable the ones your
 subscription doesn't cover.
 
 ## Requirements
 
 - Elastic Agent, and Kibana 8.19+ or 9.1+.
-- An Intel 471 **Client ID** and **Client Secret** with access to the Indicators
-  API and/or the Reports API, issued by the
+- An Intel 471 **Client ID** and **Client Secret** with access to the Indicators,
+  Reports and/or Credentials APIs, issued by the
   [Intel 471 Developer Portal](https://developer.intel471.com/).
 
 ## Setup
@@ -47,7 +54,7 @@ subscription doesn't cover.
    the first run starts: `24h` for indicators, `720h` for vulnerability reports)
    and the filters: **Threat Type** for indicators (**Indicator Type** and
    **Confidence** are under the advanced options), **Risk Level** for
-   vulnerability reports.
+   vulnerability reports, **Affiliation** for credentials (`168h` by default).
 4. Save and deploy to an agent policy.
 
 ## How collection works
@@ -63,7 +70,7 @@ Each data stream follows its API stream with an opaque cursor:
   re-fetches the page (at-least-once delivery). The document ID is a hash of the
   item exactly as received, so a re-fetched copy is rejected as a duplicate,
   while any change (an indicator's revocation, new expiry or new sighting; a
-  report update) is indexed as a new document.
+  report update; a credential's new sighting) is indexed as a new document.
 - Changing a filter discards the cursor and starts the stream again from
   *now − Initial Interval*. Changing only the Initial Interval has no effect once
   the first run has happened.
@@ -123,11 +130,39 @@ Each report covers one vulnerability, usually a CVE:
 report; reports don't expire. The source data stream
 `logs-ti_intel471.vulnerability-*` keeps raw documents for 5 days.
 
+## Compromised credentials
+
+Each document is one unique credential: a login, its password and the domain it
+was used on. The same credential is sent again when it is seen in a new
+credential set, and the latest version replaces the old one in
+`logs-ti_intel471_latest.credential`.
+
+- **The plaintext password is never stored.** The agent removes it before the
+  event is built, so it is not in `event.original` either. Password strength,
+  length, entropy, score and per-character-class counts are kept under
+  `intel471.credential.data.password`, and `password.id` is equal for equal
+  passwords, which finds reused passwords.
+- The login is mapped to `user.email` (when it is an email address), `user.name`
+  and `user.domain`, so it can be matched against authentication logs and your
+  directory. The domain the credential was used on is `url.domain`.
+- `intel471.credential.data.affiliations` says how the credential relates to
+  you (`my_employees`, `vip_emails`, `my_customers`, `third_parties`), and
+  `detection_domain` which of your monitored domains matched.
+- For credentials captured by an information stealer,
+  `intel471.credential.data.info_stealer` has the stealer family and the
+  infected machine (host name, user, IP, OS, antivirus). Each field lists the
+  values from every sighting, so with several sightings the values in different
+  fields aren't paired.
+- `event.kind` is `alert`. `@timestamp` is when the credential was last updated.
+
+To limit volume, set **Affiliation**, for example to *My employees*.
+
 ## Troubleshooting
 
 - `401`/`403` in `error.message`: check the Client ID/Secret and that your
   account has access to the API of that data stream (Indicators API for
-  indicators, Reports API for vulnerability reports).
+  indicators, Reports API for vulnerability reports, Credentials API for
+  credentials).
 - Less history than expected: the first run only fetches indicators from the
   last **Initial Interval**, and that start point is fixed once collection has
   begun. To backfill further, remove the integration and add it again with a
@@ -138,7 +173,7 @@ report; reports don't expire. The source data stream
   as duplicates, so only the missed ones are added. To pause collection without
   losing the cursor, stop the agent instead of disabling the input.
 - Nothing in Discover for recent runs: `@timestamp` is the indicator's last seen
-  time or the report's last update, not when it was ingested, so a short time
+  time or the report's or credential's last update, not when it was ingested, so a short time
   range can be empty. Filter on `event.ingested` instead.
 - Enable **request tracing** temporarily to log requests and responses on the agent.
 
@@ -155,3 +190,9 @@ report; reports don't expire. The source data stream
 {{event "vulnerability"}}
 
 {{fields "vulnerability"}}
+
+### credential
+
+{{event "credential"}}
+
+{{fields "credential"}}

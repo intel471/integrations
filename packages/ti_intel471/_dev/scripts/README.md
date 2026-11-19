@@ -11,20 +11,24 @@ gen_test_data.py           fixtures -> pipeline tests + mock API config
 test_ioc_lifecycle.py      live check: expired/revoked IOCs leave the latest index
 get_indicators_fixture.py       pulls a redacted indicator sample from the real API
 get_vulnerabilities_fixture.py  pulls a redacted vulnerability report sample
+get_credentials_fixture.py      pulls a redacted credential sample (no personal data)
 indicators_fixtures.json        the indicator sample (sensitive values replaced)
 vulnerabilities_fixtures.json   the report sample (identifying values replaced)
+credentials_fixtures.json       the credential sample (personal values replaced;
+                                plaintext passwords are FixturePlaintext-<n> markers)
 ```
 
 Package layout, for orientation:
 
 ```
-data_stream/indicator/, data_stream/vulnerability/
+data_stream/indicator/, data_stream/vulnerability/, data_stream/credential/
   agent/stream/cel.yml.hbs     CEL input: cursor paging, auth, User-Agent
   elasticsearch/ingest_pipeline/default.yml   Intel 471 -> ECS mapping
   _dev/test/pipeline/          pipeline tests (generated from the fixtures)
   _dev/test/system/            system test against a mock API
 elasticsearch/transform/latest_ioc/            one doc per indicator, expiry handling
 elasticsearch/transform/latest_vulnerability/  one doc per vulnerability report
+elasticsearch/transform/latest_credential/     one doc per credential
 _dev/deploy/docker/            mock Intel 471 API (both streams) for the system tests
 ```
 
@@ -54,6 +58,7 @@ elastic-package stack down
 ```
 INTEGRAUTH=client_id:client_secret uv run _dev/scripts/get_indicators_fixture.py 3
 INTEGRAUTH=client_id:client_secret uv run _dev/scripts/get_vulnerabilities_fixture.py 12
+INTEGRAUTH=client_id:client_secret uv run _dev/scripts/get_credentials_fixture.py 12
 python3 _dev/scripts/gen_test_data.py
 elastic-package test pipeline --generate
 ```
@@ -64,6 +69,12 @@ a data stream's `fields/fields.yml`, copy it to its transform's `fields/`
 
 API quirk: vulnerability reports list every CVSS version, with `-1` meaning not
 scored; the pipeline drops those.
+
+Credentials: the stream is `/credentials/stream` (one record per unique
+credential), not `/credentials/occurrences/stream` (one per sighting, ~1.6x the
+volume), the same default as the Sentinel playbook. `password_plain` is dropped
+in the CEL program and, as a fallback, in the pipeline (which then also drops
+event.original and tags the document `intel471_plaintext_password_removed`).
 
 ## Releasing a new version
 

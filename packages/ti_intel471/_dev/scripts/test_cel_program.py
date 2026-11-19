@@ -9,6 +9,7 @@ against a recording mock API and check the stream-following rules:
   * changing a filter discards the cursor and re-bootstraps
   * an HTTP error emits an error event and leaves the cursor untouched
   * Basic auth and the Intel471-Elastic/<version> User-Agent are sent
+  * credentials: plaintext passwords never make it into an event
 
 Needs mito:  go install github.com/elastic/mito/cmd/mito@latest
 Usage:       python3 _dev/scripts/test_cel_program.py
@@ -40,6 +41,9 @@ STREAMS = [
      "vars": {"indicator_type": "", "confidence": ""}},
     {"name": "vulnerability", "path": "/integrations/intel-report/v1/reports/vulnerability/stream", "key": "reports",
      "fixture": "vulnerabilities_fixtures.json", "filter": ("risk_level", "risk_level", "high", "low"),
+     "vars": {}},
+    {"name": "credential", "path": "/integrations/creds/v1/credentials/stream", "key": "credentials",
+     "fixture": "credentials_fixtures.json", "filter": ("affiliation_group", "affiliation_group", "my_employees", "third_parties"),
      "vars": {}},
 ]
 STREAM: dict = {}  # the stream under test, read by the mock API
@@ -131,7 +135,10 @@ check.failed = False
 def test_stream(stream: dict, port: int, version: str) -> None:
     STREAM.clear()
     STREAM.update(stream)
-    ITEMS[:] = json.loads((HERE / stream["fixture"]).read_text())[:5]
+    # Items carrying a plaintext password first, so the drop is always exercised.
+    items = json.loads((HERE / stream["fixture"]).read_text())
+    items.sort(key=lambda i: not ((i.get("data") or {}).get("password") or {}).get("password_plain"))
+    ITEMS[:] = items[:5]
     REQUESTS.clear()
     var, param, value, changed = stream["filter"]
     base = {
@@ -162,6 +169,10 @@ def test_stream(stream: dict, port: int, version: str) -> None:
         check(all(r["ua"] == f"Intel471-Elastic/{version}" for r in reqs), f"User-Agent Intel471-Elastic/{version}")
         check(execs[-1]["cursor"]["next"] == "c3", "terminal cursor_next kept")
         check(all(json.loads(e["message"])["id"] for e in events(execs[0])), "events carry the item JSON in `message`")
+        if any("password_plain" in json.dumps(i) for i in ITEMS):
+            messages = [e["message"] for x in execs for e in events(x)]
+            check(not any("password_plain" in m or "FixturePlaintext" in m for m in messages),
+                  "plaintext passwords served by the API are not in any event")
         cursor1 = execs[-1]["cursor"]
 
         print(f"{stream['name']} cycle 2: next interval resumes")

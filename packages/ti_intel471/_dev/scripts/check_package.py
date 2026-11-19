@@ -19,7 +19,7 @@ MANIFEST = PKG / "manifest.yml"
 CHANGELOG = PKG / "changelog.yml"
 HBS_FILES = sorted(PKG.glob("data_stream/*/agent/stream/cel.yml.hbs"))
 # transform -> its source data stream
-TRANSFORMS = {"latest_ioc": "indicator", "latest_vulnerability": "vulnerability"}
+TRANSFORMS = {"latest_ioc": "indicator", "latest_vulnerability": "vulnerability", "latest_credential": "credential"}
 UA_RE = re.compile(r'(user_agent:\s*"Intel471-Elastic/)([^"]+)(")')
 
 

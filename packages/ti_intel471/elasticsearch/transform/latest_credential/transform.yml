@@ -1,0 +1,34 @@
+# Keeps one document per credential (its latest version), for
+# dashboards and lookups against your directory. Credentials don't expire.
+source:
+  index:
+    - "logs-ti_intel471.credential-*"
+  query:
+    bool:
+      must_not:
+        exists:
+          field: error.message
+# Bump the dest.index suffix on breaking mapping changes, and bump
+# fleet_transform_version for any change to this configuration.
+dest:
+  index: "logs-ti_intel471_latest.dest_credential-1"
+  aliases:
+    - alias: "logs-ti_intel471_latest.credential"
+      move_on_creation: true
+latest:
+  unique_key:
+    # Namespace deliberately excluded: credentials are global.
+    - event.id
+  # Most recently received version wins; the stream delivers updates in order.
+  sort: "event.ingested"
+description: Latest Intel 471 compromised credentials
+frequency: 30s
+sync:
+  time:
+    field: "event.ingested"
+    delay: 120s
+_meta:
+  managed: true
+  fleet_transform_version: 0.1.0
+settings:
+  num_failure_retries: -1

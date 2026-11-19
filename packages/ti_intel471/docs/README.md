@@ -9,6 +9,10 @@ The Intel 471 integration collects threat intelligence from
 - **Vulnerability reports** from the Reports API, indexed as ECS
   `vulnerability` documents: Intel 471's risk assessment of a CVE, with its
   exploitation, proof-of-concept and patch status and underground activity.
+- **Compromised credentials** from the Credentials API: logins related to your
+  organisation found in infostealer logs, combo lists and breaches, with
+  password strength and the infected machine's details. Plaintext passwords
+  are never ingested.
 
 Indicators come in two threat types:
 
@@ -27,15 +31,18 @@ indicators usually include geolocation and autonomous system (ASN) details.
 - **indicator**: follows the Indicators API stream (`/integrations/indicators/v1/indicators/stream`).
 - **vulnerability**: follows the Reports API vulnerability stream
   (`/integrations/intel-report/v1/reports/vulnerability/stream`).
+- **credential**: follows the Credentials API stream
+  (`/integrations/creds/v1/credentials/stream`), one document per unique
+  credential (login, password and accessed domain).
 
-Both data streams use the same API URL and credentials. Disable the one your
+All data streams use the same API URL and credentials. Disable the ones your
 subscription doesn't cover.
 
 ## Requirements
 
 - Elastic Agent, and Kibana 8.19+ or 9.1+.
-- An Intel 471 **Client ID** and **Client Secret** with access to the Indicators
-  API and/or the Reports API, issued by the
+- An Intel 471 **Client ID** and **Client Secret** with access to the Indicators,
+  Reports and/or Credentials APIs, issued by the
   [Intel 471 Developer Portal](https://developer.intel471.com/).
 
 ## Setup
@@ -47,7 +54,7 @@ subscription doesn't cover.
    the first run starts: `24h` for indicators, `720h` for vulnerability reports)
    and the filters: **Threat Type** for indicators (**Indicator Type** and
    **Confidence** are under the advanced options), **Risk Level** for
-   vulnerability reports.
+   vulnerability reports, **Affiliation** for credentials (`168h` by default).
 4. Save and deploy to an agent policy.
 
 ## How collection works
@@ -63,7 +70,7 @@ Each data stream follows its API stream with an opaque cursor:
   re-fetches the page (at-least-once delivery). The document ID is a hash of the
   item exactly as received, so a re-fetched copy is rejected as a duplicate,
   while any change (an indicator's revocation, new expiry or new sighting; a
-  report update) is indexed as a new document.
+  report update; a credential's new sighting) is indexed as a new document.
 - Changing a filter discards the cursor and starts the stream again from
   *now − Initial Interval*. Changing only the Initial Interval has no effect once
   the first run has happened.
@@ -123,11 +130,39 @@ Each report covers one vulnerability, usually a CVE:
 report; reports don't expire. The source data stream
 `logs-ti_intel471.vulnerability-*` keeps raw documents for 5 days.
 
+## Compromised credentials
+
+Each document is one unique credential: a login, its password and the domain it
+was used on. The same credential is sent again when it is seen in a new
+credential set, and the latest version replaces the old one in
+`logs-ti_intel471_latest.credential`.
+
+- **The plaintext password is never stored.** The agent removes it before the
+  event is built, so it is not in `event.original` either. Password strength,
+  length, entropy, score and per-character-class counts are kept under
+  `intel471.credential.data.password`, and `password.id` is equal for equal
+  passwords, which finds reused passwords.
+- The login is mapped to `user.email` (when it is an email address), `user.name`
+  and `user.domain`, so it can be matched against authentication logs and your
+  directory. The domain the credential was used on is `url.domain`.
+- `intel471.credential.data.affiliations` says how the credential relates to
+  you (`my_employees`, `vip_emails`, `my_customers`, `third_parties`), and
+  `detection_domain` which of your monitored domains matched.
+- For credentials captured by an information stealer,
+  `intel471.credential.data.info_stealer` has the stealer family and the
+  infected machine (host name, user, IP, OS, antivirus). Each field lists the
+  values from every sighting, so with several sightings the values in different
+  fields aren't paired.
+- `event.kind` is `alert`. `@timestamp` is when the credential was last updated.
+
+To limit volume, set **Affiliation**, for example to *My employees*.
+
 ## Troubleshooting
 
 - `401`/`403` in `error.message`: check the Client ID/Secret and that your
   account has access to the API of that data stream (Indicators API for
-  indicators, Reports API for vulnerability reports).
+  indicators, Reports API for vulnerability reports, Credentials API for
+  credentials).
 - Less history than expected: the first run only fetches indicators from the
   last **Initial Interval**, and that start point is fixed once collection has
   begun. To backfill further, remove the integration and add it again with a
@@ -138,7 +173,7 @@ report; reports don't expire. The source data stream
   as duplicates, so only the missed ones are added. To pause collection without
   losing the cursor, stop the agent instead of disabling the input.
 - Nothing in Discover for recent runs: `@timestamp` is the indicator's last seen
-  time or the report's last update, not when it was ingested, so a short time
+  time or the report's or credential's last update, not when it was ingested, so a short time
   range can be empty. Filter on `event.ingested` instead.
 - Enable **request tracing** temporarily to log requests and responses on the agent.
 
@@ -585,4 +620,289 @@ An example event for `vulnerability` looks as following:
 | intel471.vulnerability.type | Report type (vulnerability_report). | keyword |
 | intel471.vulnerability.underground_activity_summary | Summary of underground activity related to the vulnerability (HTML removed). | text |
 | intel471.vulnerability.vendor_name | Vendor of the affected software. | keyword |
+
+
+### credential
+
+An example event for `credential` looks as following:
+
+```json
+{
+    "@timestamp": "2026-10-20T14:19:03.379Z",
+    "ecs": {
+        "version": "8.17.0"
+    },
+    "event": {
+        "category": [
+            "threat"
+        ],
+        "id": "cred--00000000-0000-5000-8000-000000000027",
+        "kind": "alert",
+        "provider": "Intel 471",
+        "agent_id_status": "verified",
+        "dataset": "ti_intel471.credential",
+        "ingested": "2026-11-19T14:10:31Z"
+    },
+    "intel471": {
+        "credential": {
+            "activity": {
+                "first_seen_ts": "2023-10-18T15:08:46.937Z",
+                "last_seen_ts": "2026-10-20T14:19:03.379Z"
+            },
+            "classification": {
+                "girs": [
+                    {
+                        "name": "Credential combination list(s)",
+                        "path": "4.2.2.1"
+                    },
+                    {
+                        "name": "Information-stealer malware",
+                        "path": "1.1.5"
+                    },
+                    {
+                        "name": "Phishing",
+                        "path": "4.4.1"
+                    },
+                    {
+                        "name": "Credential access tactic",
+                        "path": "5.2.6"
+                    },
+                    {
+                        "name": "Compromised credentials",
+                        "path": "4.2.2"
+                    }
+                ]
+            },
+            "data": {
+                "affiliations": [
+                    "my_customers"
+                ],
+                "credential_domain": "domain-6.example",
+                "credential_set_type": [
+                    "infostealers",
+                    "combolists"
+                ],
+                "credential_sets": [
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000014",
+                        "name": "Fixture credential set 7"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000028",
+                        "name": "Fixture credential set 19"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000015",
+                        "name": "Fixture credential set 8"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000029",
+                        "name": "Fixture credential set 20"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000016",
+                        "name": "Fixture credential set 9"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000017",
+                        "name": "Fixture credential set 10"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000030",
+                        "name": "Fixture credential set 21"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000004",
+                        "name": "Fixture credential set 3"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000018",
+                        "name": "Fixture credential set 11"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000019",
+                        "name": "Fixture credential set 12"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000020",
+                        "name": "Fixture credential set 13"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000031",
+                        "name": "Fixture credential set 22"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000022",
+                        "name": "Fixture credential set 15"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000032",
+                        "name": "Fixture credential set 23"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000006",
+                        "name": "Fixture credential set 5"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000033",
+                        "name": "Fixture credential set 24"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000011",
+                        "name": "Fixture credential set 6"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000023",
+                        "name": "Fixture credential set 16"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000024",
+                        "name": "Fixture credential set 17"
+                    },
+                    {
+                        "id": "cred-set--00000000-0000-5000-8000-000000000025",
+                        "name": "Fixture credential set 18"
+                    }
+                ],
+                "detection_domain": "domain-7.example",
+                "info_stealer": {
+                    "computer_username": [
+                        "fixture-user-1"
+                    ],
+                    "ip": [
+                        "10.18.1.1"
+                    ],
+                    "malware_family": [
+                        "Redline",
+                        "Unidentified"
+                    ],
+                    "malware_install_path": [
+                        "C:\\Users\\fixture\\AppData\\fixture-1.exe"
+                    ],
+                    "os": [
+                        "Windows 10 Enterprise x64"
+                    ]
+                },
+                "password": {
+                    "complexity": {
+                        "entropy": 39.86314,
+                        "length": 12,
+                        "lowercase": 5,
+                        "numbers": 4,
+                        "other": 0,
+                        "punctuation_marks": 1,
+                        "score": 0.49809,
+                        "separators": 0,
+                        "symbols": 0,
+                        "uppercase": 2,
+                        "weakness": 0.0
+                    },
+                    "id": "0000000000000000000000000000000000000000000000000000000000000009",
+                    "strength": "medium"
+                }
+            },
+            "last_updated_ts": "2026-10-20T14:19:03.379Z",
+            "statistics": {
+                "accessed_domains_count": 1
+            }
+        }
+    },
+    "related": {
+        "hosts": [
+            "site-3.example"
+        ],
+        "ip": [
+            "10.18.1.1"
+        ],
+        "user": [
+            "user-8@domain-6.example",
+            "user-8"
+        ]
+    },
+    "url": {
+        "domain": "site-3.example"
+    },
+    "user": {
+        "domain": "domain-6.example",
+        "email": "user-8@domain-6.example",
+        "name": "user-8"
+    },
+    "agent": {
+        "ephemeral_id": "953ca31b-ae48-4c2d-8d41-9953ec49227a",
+        "id": "031481ee-0179-4008-b7a8-9c6d9ab7b281",
+        "name": "elastic-agent-28214",
+        "type": "filebeat",
+        "version": "8.19.0"
+    },
+    "elastic_agent": {
+        "id": "031481ee-0179-4008-b7a8-9c6d9ab7b281",
+        "snapshot": false,
+        "version": "8.19.0"
+    },
+    "input": {
+        "type": "cel"
+    },
+    "data_stream": {
+        "dataset": "ti_intel471.credential",
+        "namespace": "73991",
+        "type": "logs"
+    },
+    "tags": [
+        "forwarded",
+        "intel471-credential"
+    ]
+}
+```
+
+**Exported fields**
+
+| Field | Description | Type |
+|---|---|---|
+| @timestamp | Event timestamp (when the credential was last updated). | date |
+| data_stream.dataset | Data stream dataset. | constant_keyword |
+| data_stream.namespace | Data stream namespace. | constant_keyword |
+| data_stream.type | Data stream type. | constant_keyword |
+| event.dataset | Event dataset. | constant_keyword |
+| event.module | Event module. | constant_keyword |
+| input.type | Input type. | keyword |
+| intel471.credential.activity.first_seen_ts | Start of the credential's activity range. | date |
+| intel471.credential.activity.last_seen_ts | End of the credential's activity range. | date |
+| intel471.credential.classification.girs.name | GIR name. | keyword |
+| intel471.credential.classification.girs.path | GIR path, for example 1.1.13. | keyword |
+| intel471.credential.data.accessed_domain | Domain the credential was used on when it was captured. | keyword |
+| intel471.credential.data.affiliations | Affiliation to your organisation (my_employees, vip_emails, my_customers, third_parties). | keyword |
+| intel471.credential.data.credential_domain | Domain of the login. | keyword |
+| intel471.credential.data.credential_login | Login of the credential, usually an email address. | keyword |
+| intel471.credential.data.credential_set_type | Types of the credential sets the credential was found in (infostealers, combolists, breaches). | keyword |
+| intel471.credential.data.credential_sets.id | Credential set identifier. | keyword |
+| intel471.credential.data.credential_sets.name | Credential set name. | keyword |
+| intel471.credential.data.detection_domain | Monitored domain that caused the credential to be detected. | keyword |
+| intel471.credential.data.info_stealer.antivirus_software | Antivirus software reported on the infected machines. | keyword |
+| intel471.credential.data.info_stealer.computer_username | Local user accounts on the infected machines. | keyword |
+| intel471.credential.data.info_stealer.infection_ts | When the machines were infected. | date |
+| intel471.credential.data.info_stealer.ip | IP addresses of the infected machines. | ip |
+| intel471.credential.data.info_stealer.isp | Internet service providers of the infected machines. | keyword |
+| intel471.credential.data.info_stealer.machine_id | Identifiers of the infected machines. | keyword |
+| intel471.credential.data.info_stealer.malware_family | Stealer families, for example Redline, Lumma, VIDAR. | keyword |
+| intel471.credential.data.info_stealer.malware_install_path | Where the stealer was installed. | keyword |
+| intel471.credential.data.info_stealer.os | Operating systems of the infected machines. | keyword |
+| intel471.credential.data.info_stealer.pc_name | Host names of the infected machines. | keyword |
+| intel471.credential.data.info_stealer.screenshot_path | Paths of screenshots taken by the stealer. | keyword |
+| intel471.credential.data.info_stealer.version | Stealer versions. | keyword |
+| intel471.credential.data.password.complexity.entropy | Password entropy. | double |
+| intel471.credential.data.password.complexity.length | Number of characters. | long |
+| intel471.credential.data.password.complexity.lowercase | Number of lowercase letters. | long |
+| intel471.credential.data.password.complexity.numbers | Number of digits. | long |
+| intel471.credential.data.password.complexity.other | Number of other characters. | long |
+| intel471.credential.data.password.complexity.punctuation_marks | Number of punctuation marks. | long |
+| intel471.credential.data.password.complexity.score | Password score, 0 to 1. | double |
+| intel471.credential.data.password.complexity.separators | Number of separators. | long |
+| intel471.credential.data.password.complexity.symbols | Number of symbols. | long |
+| intel471.credential.data.password.complexity.uppercase | Number of uppercase letters. | long |
+| intel471.credential.data.password.complexity.weakness | Password weakness. | double |
+| intel471.credential.data.password.id | Opaque password identifier; equal IDs mean equal passwords. | keyword |
+| intel471.credential.data.password.strength | Password strength (excellent, strong, medium, weak, poor, not_provided). | keyword |
+| intel471.credential.id | Unique identifier of the credential. | keyword |
+| intel471.credential.last_updated_ts | When the credential was last updated. | date |
+| intel471.credential.statistics.accessed_domains_count | Number of distinct domains the credential was used on. | long |
 
