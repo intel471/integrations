@@ -1,9 +1,14 @@
 # Intel 471 Integration
 
-The Intel 471 integration collects threat intelligence indicators from the
-[Intel 471](https://intel471.com/) Indicators API and indexes them as ECS
-`threat.indicator` documents, ready for Elastic Security indicator match rules
-and the Intelligence page.
+The Intel 471 integration collects threat intelligence from
+[Intel 471](https://intel471.com/):
+
+- **Indicators** from the Indicators API, indexed as ECS `threat.indicator`
+  documents, ready for Elastic Security indicator match rules and the
+  Intelligence page.
+- **Vulnerability reports** from the Reports API, indexed as ECS
+  `vulnerability` documents: Intel 471's risk assessment of a CVE, with its
+  exploitation, proof-of-concept and patch status and underground activity.
 
 Indicators come in two threat types:
 
@@ -20,26 +25,34 @@ indicators usually include geolocation and autonomous system (ASN) details.
 ## Data streams
 
 - **indicator**: follows the Indicators API stream (`/integrations/indicators/v1/indicators/stream`).
+- **vulnerability**: follows the Reports API vulnerability stream
+  (`/integrations/intel-report/v1/reports/vulnerability/stream`).
+
+Both data streams use the same API URL and credentials. Disable the one your
+subscription doesn't cover.
 
 ## Requirements
 
 - Elastic Agent, and Kibana 8.19+ or 9.1+.
-- An Intel 471 **Client ID** and **Client Secret** for the Indicators API, issued by
-  the [Intel 471 Developer Portal](https://developer.intel471.com/).
+- An Intel 471 **Client ID** and **Client Secret** with access to the Indicators
+  API and/or the Reports API, issued by the
+  [Intel 471 Developer Portal](https://developer.intel471.com/).
 
 ## Setup
 
 1. In Kibana, go to **Management > Integrations**, search for **Intel 471** and
    click **Add Intel 471**.
 2. Enter the **Client ID** and **Client Secret**.
-3. Optionally set the **Initial Interval** (how far back the first run starts,
-   default `24h`) and narrow the stream by **Threat Type**. **Indicator Type** and
-   **Confidence** filters are under the advanced options.
+3. For each data stream, optionally set the **Initial Interval** (how far back
+   the first run starts: `24h` for indicators, `720h` for vulnerability reports)
+   and the filters: **Threat Type** for indicators (**Indicator Type** and
+   **Confidence** are under the advanced options), **Risk Level** for
+   vulnerability reports.
 4. Save and deploy to an agent policy.
 
 ## How collection works
 
-The integration follows the API stream with an opaque cursor:
+Each data stream follows its API stream with an opaque cursor:
 
 - On the first run it starts at *now − Initial Interval*. That start point and the
   filters are stored with the cursor and sent unchanged on every request; only the
@@ -48,9 +61,9 @@ The integration follows the API stream with an opaque cursor:
   page size, then stores the last cursor and waits for the next interval.
 - The cursor is saved only after the page's events are published, so a failure
   re-fetches the page (at-least-once delivery). The document ID is a hash of the
-  indicator exactly as received, so a re-fetched copy is rejected as a duplicate,
-  while any change to the indicator (revocation, new expiry, new sighting) is
-  indexed as a new document.
+  item exactly as received, so a re-fetched copy is rejected as a duplicate,
+  while any change (an indicator's revocation, new expiry or new sighting; a
+  report update) is indexed as a new document.
 - Changing a filter discards the cursor and starts the stream again from
   *now − Initial Interval*. Changing only the Initial Interval has no effect once
   the first run has happened.
@@ -88,10 +101,33 @@ When an indicator is received again, its most recently received version wins.
 The source data stream `logs-ti_intel471.indicator-*` keeps raw documents for 5
 days (data stream lifecycle); the latest index holds the current state.
 
+## Vulnerability reports
+
+Each report covers one vulnerability, usually a CVE:
+
+- `vulnerability.id` is the CVE ID (`vulnerability.enumeration: CVE`), and
+  `vulnerability.reference` links to the report in the Intel 471 portal.
+- `vulnerability.severity` is Intel 471's **risk level** (High, Medium, Low), which
+  weighs exploitation and underground interest, not only the CVSS score.
+- `vulnerability.score.base` is the CVSS 3.1 score, or else 3.0, 4.0 or 2.0;
+  every version's score is in `intel471.vulnerability.cvss.v3_1` and so on.
+  Versions the API reports as unscored (`-1`) are left out.
+- `vulnerability.description` and `intel471.vulnerability.underground_activity_summary`
+  and `counter_measures` hold the report's summaries as plain text.
+- `intel471.vulnerability.*` has the exploitation status, proof-of-concept and patch
+  status, interest level, where activity was seen, the vendor and product, and
+  links to sources, proofs of concept, patches and countermeasures.
+
+`@timestamp` is when the report was last updated. A transform
+(`logs-ti_intel471_latest.vulnerability`) keeps the latest version of each
+report; reports don't expire. The source data stream
+`logs-ti_intel471.vulnerability-*` keeps raw documents for 5 days.
+
 ## Troubleshooting
 
 - `401`/`403` in `error.message`: check the Client ID/Secret and that your
-  account has Indicators API access.
+  account has access to the API of that data stream (Indicators API for
+  indicators, Reports API for vulnerability reports).
 - Less history than expected: the first run only fetches indicators from the
   last **Initial Interval**, and that start point is fixed once collection has
   begun. To backfill further, remove the integration and add it again with a
@@ -102,8 +138,8 @@ days (data stream lifecycle); the latest index holds the current state.
   as duplicates, so only the missed ones are added. To pause collection without
   losing the cursor, stop the agent instead of disabling the input.
 - Nothing in Discover for recent runs: `@timestamp` is the indicator's last seen
-  time, not when it was ingested, so a short time range can be empty. Filter on
-  `event.ingested` instead.
+  time or the report's last update, not when it was ingested, so a short time
+  range can be empty. Filter on `event.ingested` instead.
 - Enable **request tracing** temporarily to log requests and responses on the agent.
 
 ## Logs reference
@@ -294,4 +330,259 @@ An example event for `indicator` looks as following:
 | intel471.indicator.threat.type | Threat type, `malware` or `bulletproof_hosting`. | keyword |
 | intel471.indicator.type | Indicator type (domain, email, file, ipv4, url, yara). | keyword |
 | labels.is_ioc_transform_source | Indicates whether an IOC is in the raw source data stream, or in the latest destination index. | constant_keyword |
+
+
+### vulnerability
+
+An example event for `vulnerability` looks as following:
+
+```json
+{
+    "@timestamp": "2026-10-20T17:42:52.000Z",
+    "ecs": {
+        "version": "8.17.0"
+    },
+    "event": {
+        "category": [
+            "vulnerability"
+        ],
+        "id": "vulnerability--00000000-0000-5000-8000-000000000023",
+        "kind": "enrichment",
+        "provider": "Intel 471",
+        "type": [
+            "info"
+        ],
+        "agent_id_status": "verified",
+        "dataset": "ti_intel471.vulnerability",
+        "ingested": "2026-11-19T13:40:12Z"
+    },
+    "intel471": {
+        "vulnerability": {
+            "activity": {
+                "first_seen_ts": "2026-06-30T08:53:14.000Z",
+                "last_seen_ts": "2026-10-20T17:42:52.000Z"
+            },
+            "activity_location": [
+                "location_underground",
+                "location_opensource",
+                "location_private"
+            ],
+            "classification": {
+                "girs": [
+                    {
+                        "name": "Vulnerabilities",
+                        "path": "2.1"
+                    },
+                    {
+                        "name": "Web application vulnerabilities",
+                        "path": "2.1.2.4"
+                    },
+                    {
+                        "name": "Initial access vulnerabilities",
+                        "path": "2.1.13"
+                    },
+                    {
+                        "name": "Exploit development",
+                        "path": "2.2"
+                    },
+                    {
+                        "name": "Exploited in wild",
+                        "path": "2.2.2"
+                    }
+                ]
+            },
+            "counter_measures": "Fixture counter_measures 3 & details. Point 3",
+            "creation_ts": "2026-06-30T08:53:14.000Z",
+            "cvss": {
+                "v3_1": 9.8
+            },
+            "exploit_status": [
+                "weaponized"
+            ],
+            "interest_level": [
+                "researched_publicly",
+                "disclosed_publicly"
+            ],
+            "last_updated_ts": "2026-10-20T17:42:52.000Z",
+            "links": {
+                "verity_api": {
+                    "href": "https://api.intel471.cloud/integrations/intel-report/v1/reports/vulnerability/vulnerability--00000000-0000-5000-8000-000000000023"
+                },
+                "verity_portal": {
+                    "href": "https://verity.intel471.com/vulnerabilities/vulnerability--00000000-0000-5000-8000-000000000023"
+                }
+            },
+            "patch_links": [
+                {
+                    "links": {
+                        "external": {
+                            "href": "https://external.example/patch/10"
+                        }
+                    },
+                    "title": "Fixture patch 3",
+                    "type": "external"
+                }
+            ],
+            "patch_status": "available",
+            "poc": "not_observed",
+            "poc_links": [
+                {
+                    "links": {
+                        "external": {
+                            "href": "https://external.example/poc/8"
+                        }
+                    },
+                    "title": "Fixture poc 5",
+                    "type": "external"
+                },
+                {
+                    "links": {
+                        "external": {
+                            "href": "https://external.example/poc/9"
+                        }
+                    },
+                    "title": "Fixture poc 6",
+                    "type": "external"
+                }
+            ],
+            "product_name": "Example Product 1",
+            "released_ts": "2026-10-20T17:42:52.000Z",
+            "risk_level": "high",
+            "sort_priority": 0,
+            "sources": [
+                {
+                    "links": {
+                        "verity_api": {
+                            "href": "https://api.intel471.cloud/integrations/intel-report/v1/reports/info/report--00000000-0000-5000-8000-000000000024"
+                        },
+                        "verity_portal": {
+                            "href": "https://verity.intel471.com/intelligence/infoReportView/report--00000000-0000-5000-8000-000000000024"
+                        }
+                    },
+                    "title": "Fixture sources 15",
+                    "type": "internal"
+                }
+            ],
+            "status": "historical",
+            "type": "vulnerability_report",
+            "underground_activity_summary": "Fixture underground_activity_summary 3 & details. Point 3",
+            "vendor_name": "Example Vendor 3"
+        }
+    },
+    "vulnerability": {
+        "category": [
+            "Unspecified"
+        ],
+        "classification": "CVSS",
+        "description": "Fixture body 3 & details. Point 3",
+        "enumeration": "CVE",
+        "id": "CVE-2099-10003",
+        "reference": "https://verity.intel471.com/vulnerabilities/vulnerability--00000000-0000-5000-8000-000000000023",
+        "score": {
+            "base": 9.8,
+            "version": "3.1"
+        },
+        "severity": "High"
+    },
+    "agent": {
+        "ephemeral_id": "953ca31b-ae48-4c2d-8d41-9953ec49227a",
+        "id": "031481ee-0179-4008-b7a8-9c6d9ab7b281",
+        "name": "elastic-agent-28214",
+        "type": "filebeat",
+        "version": "8.19.0"
+    },
+    "elastic_agent": {
+        "id": "031481ee-0179-4008-b7a8-9c6d9ab7b281",
+        "snapshot": false,
+        "version": "8.19.0"
+    },
+    "input": {
+        "type": "cel"
+    },
+    "data_stream": {
+        "dataset": "ti_intel471.vulnerability",
+        "namespace": "73991",
+        "type": "logs"
+    },
+    "tags": [
+        "forwarded",
+        "intel471-vulnerability"
+    ]
+}
+```
+
+**Exported fields**
+
+| Field | Description | Type |
+|---|---|---|
+| @timestamp | Event timestamp (when the report was last updated). | date |
+| data_stream.dataset | Data stream dataset. | constant_keyword |
+| data_stream.namespace | Data stream namespace. | constant_keyword |
+| data_stream.type | Data stream type. | constant_keyword |
+| event.dataset | Event dataset. | constant_keyword |
+| event.module | Event module. | constant_keyword |
+| input.type | Input type. | keyword |
+| intel471.vulnerability.activity.first_seen_ts | First time activity related to the vulnerability was seen. | date |
+| intel471.vulnerability.activity.last_seen_ts | Last time activity related to the vulnerability was seen. | date |
+| intel471.vulnerability.activity_location | Where activity related to the vulnerability was observed, for example location_underground. | keyword |
+| intel471.vulnerability.aliases | Alternative names of the vulnerability. | keyword |
+| intel471.vulnerability.body | Summary of the vulnerability (HTML removed). | text |
+| intel471.vulnerability.classification.girs.name | GIR name. | keyword |
+| intel471.vulnerability.classification.girs.path | GIR path, for example 1.1.13. | keyword |
+| intel471.vulnerability.counter_measure_links.index | Index of the source in the report text. | long |
+| intel471.vulnerability.counter_measure_links.last_updated_ts | When the source was last updated. | date |
+| intel471.vulnerability.counter_measure_links.links.external.href | External URL. | keyword |
+| intel471.vulnerability.counter_measure_links.links.verity_api.href | URL in the Intel 471 API. | keyword |
+| intel471.vulnerability.counter_measure_links.links.verity_portal.href | URL in the Intel 471 portal. | keyword |
+| intel471.vulnerability.counter_measure_links.source_type | Characterisation of the source. | keyword |
+| intel471.vulnerability.counter_measure_links.title | Title. | keyword |
+| intel471.vulnerability.counter_measure_links.type | Link type (internal or external). | keyword |
+| intel471.vulnerability.counter_measures | Summary of countermeasures for the vulnerability (HTML removed). | text |
+| intel471.vulnerability.creation_ts | When the report was first published. | date |
+| intel471.vulnerability.cve_type | Weakness type, for example Path traversal or Use after free. | keyword |
+| intel471.vulnerability.cvss.v2_0 | CVSS 2.0 base score. | float |
+| intel471.vulnerability.cvss.v3_0 | CVSS 3.0 base score. | float |
+| intel471.vulnerability.cvss.v3_1 | CVSS 3.1 base score. | float |
+| intel471.vulnerability.cvss.v4_0 | CVSS 4.0 base score. | float |
+| intel471.vulnerability.exploit_status | Exploitation status, for example weaponized, productized, available or not_observed. | keyword |
+| intel471.vulnerability.id | Unique identifier of the report. | keyword |
+| intel471.vulnerability.interest_level | Levels of interest in the vulnerability, for example researched_publicly or exploit_sought. | keyword |
+| intel471.vulnerability.last_updated_ts | When the report was last updated. | date |
+| intel471.vulnerability.links.verity_api.href | The report in the Intel 471 API. | keyword |
+| intel471.vulnerability.links.verity_portal.href | The report in the Intel 471 portal. | keyword |
+| intel471.vulnerability.name | Name of the vulnerability, usually its CVE ID. | keyword |
+| intel471.vulnerability.patch_links.index | Index of the source in the report text. | long |
+| intel471.vulnerability.patch_links.last_updated_ts | When the source was last updated. | date |
+| intel471.vulnerability.patch_links.links.external.href | External URL. | keyword |
+| intel471.vulnerability.patch_links.links.verity_api.href | URL in the Intel 471 API. | keyword |
+| intel471.vulnerability.patch_links.links.verity_portal.href | URL in the Intel 471 portal. | keyword |
+| intel471.vulnerability.patch_links.source_type | Characterisation of the source. | keyword |
+| intel471.vulnerability.patch_links.title | Title. | keyword |
+| intel471.vulnerability.patch_links.type | Link type (internal or external). | keyword |
+| intel471.vulnerability.patch_status | Patch availability (available, some_available, unavailable). | keyword |
+| intel471.vulnerability.poc | Whether proof-of-concept code has been observed (observed, not_observed). | keyword |
+| intel471.vulnerability.poc_links.index | Index of the source in the report text. | long |
+| intel471.vulnerability.poc_links.last_updated_ts | When the source was last updated. | date |
+| intel471.vulnerability.poc_links.links.external.href | External URL. | keyword |
+| intel471.vulnerability.poc_links.links.verity_api.href | URL in the Intel 471 API. | keyword |
+| intel471.vulnerability.poc_links.links.verity_portal.href | URL in the Intel 471 portal. | keyword |
+| intel471.vulnerability.poc_links.source_type | Characterisation of the source. | keyword |
+| intel471.vulnerability.poc_links.title | Title. | keyword |
+| intel471.vulnerability.poc_links.type | Link type (internal or external). | keyword |
+| intel471.vulnerability.product_name | Affected product. | keyword |
+| intel471.vulnerability.released_ts | When the report was last published. | date |
+| intel471.vulnerability.risk_level | Intel 471 risk level (high, medium, low). | keyword |
+| intel471.vulnerability.sort_priority | Priority Intel 471 uses for sorting vulnerability reports. | long |
+| intel471.vulnerability.sources.index | Index of the source in the report text. | long |
+| intel471.vulnerability.sources.last_updated_ts | When the source was last updated. | date |
+| intel471.vulnerability.sources.links.external.href | External URL. | keyword |
+| intel471.vulnerability.sources.links.verity_api.href | URL in the Intel 471 API. | keyword |
+| intel471.vulnerability.sources.links.verity_portal.href | URL in the Intel 471 portal. | keyword |
+| intel471.vulnerability.sources.source_type | Characterisation of the source. | keyword |
+| intel471.vulnerability.sources.title | Title. | keyword |
+| intel471.vulnerability.sources.type | Link type (internal or external). | keyword |
+| intel471.vulnerability.status | Report status (new, existing, historical). | keyword |
+| intel471.vulnerability.type | Report type (vulnerability_report). | keyword |
+| intel471.vulnerability.underground_activity_summary | Summary of underground activity related to the vulnerability (HTML removed). | text |
+| intel471.vulnerability.vendor_name | Vendor of the affected software. | keyword |
 

@@ -1,0 +1,15 @@
+input: cel
+service: intel471_stub
+vars:
+  url: http://{{Hostname}}:{{Port}}
+  client_id: test-client
+  client_secret: test-secret
+data_stream:
+  vars:
+    interval: 10m
+    page_size: 2
+    preserve_original_event: true
+    enable_request_tracer: true
+assert:
+  # Three pages (2 + 2 + 1) chained by cursor_next; see _dev/scripts/gen_test_data.py.
+  hit_count: 5

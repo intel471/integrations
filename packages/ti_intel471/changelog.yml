@@ -1,6 +1,6 @@
 # newer versions go on top
 - version: "0.1.0"
   changes:
-    - description: Initial release with the indicator data stream and latest IOC transform.
+    - description: Initial release with the indicator and vulnerability data streams and their latest transforms.
       type: enhancement
       link: https://github.com/elastic/integrations/pull/1

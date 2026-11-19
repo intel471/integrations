@@ -1,11 +1,11 @@
-"""Run the ti_intel471 CEL program through mito against a recording mock API and
-check the stream-following rules:
+"""Run each ti_intel471 CEL program (indicator, vulnerability) through mito
+against a recording mock API and check the stream-following rules:
 
   * first run: `from` = now - initial_interval (epoch ms), no cursor sent
   * pages chain via cursor_next; `from` and filters are replayed verbatim
   * a short page stops the run (want_more=false); its cursor_next is kept
   * the next polling cycle resumes from that cursor, same `from`
-  * a drained page with the `indicators` key absent yields no events
+  * a drained page with the items key (`indicators`, `reports`) absent yields no events
   * changing a filter discards the cursor and re-bootstraps
   * an HTTP error emits an error event and leaves the cursor untouched
   * Basic auth and the Intel471-Elastic/<version> User-Agent are sent
@@ -28,12 +28,22 @@ from urllib.parse import parse_qs, urlsplit
 
 HERE = Path(__file__).resolve().parent
 PKG = HERE.parent.parent
-HBS = PKG / "data_stream" / "indicator" / "agent" / "stream" / "cel.yml.hbs"
 MANIFEST = PKG / "manifest.yml"
-FIXTURE = HERE / "indicators_fixtures.json"
 MITO = shutil.which("mito") or str(Path.home() / "go" / "bin" / "mito")
 
-ITEMS = json.loads(FIXTURE.read_text())[:5]
+# Per data stream: API path, response items key, the fixture, and a filter to
+# exercise as (state var, query param, first value, changed value). `vars` are
+# the stream's other filter vars, sent empty.
+STREAMS = [
+    {"name": "indicator", "path": "/integrations/indicators/v1/indicators/stream", "key": "indicators",
+     "fixture": "indicators_fixtures.json", "filter": ("threat_type", "threat_type", "malware", "bulletproof_hosting"),
+     "vars": {"indicator_type": "", "confidence": ""}},
+    {"name": "vulnerability", "path": "/integrations/intel-report/v1/reports/vulnerability/stream", "key": "reports",
+     "fixture": "vulnerabilities_fixtures.json", "filter": ("risk_level", "risk_level", "high", "low"),
+     "vars": {}},
+]
+STREAM: dict = {}  # the stream under test, read by the mock API
+ITEMS: list = []
 PAGES = {None: (0, "c1"), "c1": (2, "c2"), "c2": (4, "c3"), "c3": (5, "c3")}  # cursor -> (offset, next)
 AUTH = "Basic " + base64.b64encode(b"cid:secret").decode()
 REQUESTS: list[dict] = []
@@ -50,13 +60,15 @@ class MockAPI(BaseHTTPRequestHandler):
                          "auth": self.headers.get("Authorization")})
         if self.headers.get("Authorization") != AUTH:
             return self._send(401, {"error": "Unauthorized"})
+        if url.path != STREAM["path"]:
+            return self._send(404, {"error": "Not Found"})
         if q.get("cursor") not in PAGES:
             return self._send(403, {"error": "Forbidden"})
         offset, nxt = PAGES[q.get("cursor")]
         page = ITEMS[offset:offset + int(q["size"])]
         body = {"count": len(ITEMS), "cursor_next": nxt}
         if page:
-            body["indicators"] = page  # a drained page omits the key, like the real API can
+            body[STREAM["key"]] = page  # a drained page omits the key, like the real API can
         self._send(200, body)
 
     def _send(self, code, body):
@@ -67,9 +79,10 @@ class MockAPI(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
 
-def program() -> str:
+def program(stream: dict) -> str:
+    hbs = PKG / "data_stream" / stream["name"] / "agent" / "stream" / "cel.yml.hbs"
     lines, inside = [], False
-    for line in HBS.read_text().splitlines():
+    for line in hbs.read_text().splitlines():
         if line.startswith("program: |"):
             inside = True
             continue
@@ -115,22 +128,24 @@ def check(cond: bool, msg: str) -> None:
 check.failed = False
 
 
-def main() -> None:
-    version = re.search(r'^version:\s*"?([^"\n]+)"?', MANIFEST.read_text(), re.M).group(1)
-    server = HTTPServer(("127.0.0.1", 0), MockAPI)
-    threading.Thread(target=server.serve_forever, daemon=True).start()
+def test_stream(stream: dict, port: int, version: str) -> None:
+    STREAM.clear()
+    STREAM.update(stream)
+    ITEMS[:] = json.loads((HERE / stream["fixture"]).read_text())[:5]
+    REQUESTS.clear()
+    var, param, value, changed = stream["filter"]
     base = {
-        "url": f"http://127.0.0.1:{server.server_port}/",
+        "url": f"http://127.0.0.1:{port}/",
         "client_id": "cid", "client_secret": "secret",
         "user_agent": f"Intel471-Elastic/{version}",
         "page_size": 2, "initial_interval": "24h",
-        "threat_type": "malware", "indicator_type": "", "confidence": "",
+        var: value, **stream["vars"],
     }
     with tempfile.TemporaryDirectory() as tmp:
         work = Path(tmp)
-        (work / "program.cel").write_text(program())
+        (work / "program.cel").write_text(program(stream))
 
-        print("cycle 1: first run")
+        print(f"{stream['name']} cycle 1: first run")
         before = int((time.time() - 86400) * 1000)
         execs = run(work, base)
         reqs = list(REQUESTS)
@@ -138,18 +153,18 @@ def main() -> None:
         check(len(execs) == 3, f"three pages fetched (got {len(execs)})")
         check([len(events(e)) for e in execs] == [2, 2, 1], "2 + 2 + 1 events")
         check([e["want_more"] for e in execs] == [True, True, False], "stops on the short page")
-        check(all(r["path"] == "/integrations/indicators/v1/indicators/stream" for r in reqs), "Indicators API stream path")
+        check(all(r["path"] == stream["path"] for r in reqs), f"requests {stream['path']}")
         check("cursor" not in reqs[0]["q"], "no cursor on the very first request")
         check([r["q"].get("cursor") for r in reqs[1:]] == ["c1", "c2"], "cursor_next chained")
         check(len(froms) == 1 and abs(int(froms.pop()) - before) < 60_000, "`from` = now-24h in ms, frozen across pages")
-        check(all(r["q"].get("threat_type") == "malware" and r["q"]["size"] == "2" for r in reqs), "filters + size replayed")
+        check(all(r["q"].get(param) == value and r["q"]["size"] == "2" for r in reqs), "filters + size replayed")
         check(all(r["auth"] == AUTH for r in reqs), "Basic auth sent")
         check(all(r["ua"] == f"Intel471-Elastic/{version}" for r in reqs), f"User-Agent Intel471-Elastic/{version}")
         check(execs[-1]["cursor"]["next"] == "c3", "terminal cursor_next kept")
-        check(all(json.loads(e["message"])["id"] for e in events(execs[0])), "events carry the indicator JSON in `message`")
+        check(all(json.loads(e["message"])["id"] for e in events(execs[0])), "events carry the item JSON in `message`")
         cursor1 = execs[-1]["cursor"]
 
-        print("cycle 2: next interval resumes")
+        print(f"{stream['name']} cycle 2: next interval resumes")
         REQUESTS.clear()
         execs = run(work, next_cycle(execs[-1]))
         check(len(REQUESTS) == 1 and REQUESTS[0]["q"].get("cursor") == "c3", "resumes from the stored cursor")
@@ -157,15 +172,15 @@ def main() -> None:
         check(events(execs[-1]) == [] and execs[-1]["want_more"] is False, "drained page (key absent) -> no events")
         check(execs[-1]["cursor"] == cursor1, "cursor unchanged")
 
-        print("cycle 3: filter change re-bootstraps")
+        print(f"{stream['name']} cycle 3: filter change re-bootstraps")
         REQUESTS.clear()
-        state = next_cycle(execs[-1]) | {"threat_type": "bulletproof_hosting"}
+        state = next_cycle(execs[-1]) | {var: changed}
         execs = run(work, state)
         check("cursor" not in REQUESTS[0]["q"], "old cursor not sent")
-        check(REQUESTS[0]["q"].get("threat_type") == "bulletproof_hosting", "new filter sent")
+        check(REQUESTS[0]["q"].get(param) == changed, "new filter sent")
         check(execs[-1]["cursor"]["filter_key"] != cursor1["filter_key"], "new filter key stored")
 
-        print("cycle 4: HTTP error keeps the cursor")
+        print(f"{stream['name']} cycle 4: HTTP error keeps the cursor")
         REQUESTS.clear()
         broken = next_cycle(execs[-1])
         broken["cursor"] = dict(broken["cursor"], next="expired")
@@ -175,12 +190,20 @@ def main() -> None:
         check(execs[-1]["cursor"] == broken["cursor"], "cursor untouched on error")
         check(execs[-1]["want_more"] is False, "no retry loop within the cycle")
 
-        print("cycle 5: bad credentials")
+        print(f"{stream['name']} cycle 5: bad credentials")
         REQUESTS.clear()
         execs = run(work, base | {"client_secret": "wrong"})
         check(events(execs[-1])[0]["error"]["code"] == "401", "401 surfaced as an error event")
         check("cursor" not in execs[-1], "no cursor stored")
 
+
+
+def main() -> None:
+    version = re.search(r'^version:\s*"?([^"\n]+)"?', MANIFEST.read_text(), re.M).group(1)
+    server = HTTPServer(("127.0.0.1", 0), MockAPI)
+    threading.Thread(target=server.serve_forever, daemon=True).start()
+    for stream in STREAMS:
+        test_stream(stream, server.server_port, version)
     server.shutdown()
     sys.exit(1 if check.failed else 0)
 

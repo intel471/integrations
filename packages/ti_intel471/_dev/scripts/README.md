@@ -6,23 +6,26 @@ package.
 
 ```
 check_package.py           User-Agent / changelog / manifest version sync
-test_cel_program.py        runs the CEL program in mito against a mock API
-gen_test_data.py           fixture -> pipeline tests + mock API config
+test_cel_program.py        runs each CEL program in mito against a mock API
+gen_test_data.py           fixtures -> pipeline tests + mock API config
 test_ioc_lifecycle.py      live check: expired/revoked IOCs leave the latest index
-get_indicators_fixture.py  pulls a redacted sample from the real API
-indicators_fixtures.json   that sample (sensitive values replaced)
+get_indicators_fixture.py       pulls a redacted indicator sample from the real API
+get_vulnerabilities_fixture.py  pulls a redacted vulnerability report sample
+indicators_fixtures.json        the indicator sample (sensitive values replaced)
+vulnerabilities_fixtures.json   the report sample (identifying values replaced)
 ```
 
 Package layout, for orientation:
 
 ```
-data_stream/indicator/
+data_stream/indicator/, data_stream/vulnerability/
   agent/stream/cel.yml.hbs     CEL input: cursor paging, auth, User-Agent
   elasticsearch/ingest_pipeline/default.yml   Intel 471 -> ECS mapping
-  _dev/test/pipeline/          pipeline tests (generated from the fixture)
+  _dev/test/pipeline/          pipeline tests (generated from the fixtures)
   _dev/test/system/            system test against a mock API
-elasticsearch/transform/latest_ioc/   one doc per indicator, expiry handling
-_dev/deploy/docker/            mock Indicators API for the system test
+elasticsearch/transform/latest_ioc/            one doc per indicator, expiry handling
+elasticsearch/transform/latest_vulnerability/  one doc per vulnerability report
+_dev/deploy/docker/            mock Intel 471 API (both streams) for the system tests
 ```
 
 ## Tooling
@@ -35,7 +38,7 @@ go install github.com/elastic/mito/cmd/mito@latest
 ## Tests
 
 ```
-python3 _dev/scripts/check_package.py         # versions in sync
+python3 _dev/scripts/check_package.py         # versions and transform fields in sync
 python3 _dev/scripts/test_cel_program.py      # CEL cursor/auth/error behaviour, no stack needed
 
 elastic-package check                         # lint + build
@@ -50,11 +53,17 @@ elastic-package stack down
 
 ```
 INTEGRAUTH=client_id:client_secret uv run _dev/scripts/get_indicators_fixture.py 3
+INTEGRAUTH=client_id:client_secret uv run _dev/scripts/get_vulnerabilities_fixture.py 12
 python3 _dev/scripts/gen_test_data.py
 elastic-package test pipeline --generate
 ```
 
-Review the regenerated `*-expected.json` diffs before committing.
+Review the regenerated `*-expected.json` diffs before committing. After changing
+a data stream's `fields/fields.yml`, copy it to its transform's `fields/`
+(`check_package.py` catches drift).
+
+API quirk: vulnerability reports list every CVSS version, with `-1` meaning not
+scored; the pipeline drops those.
 
 ## Releasing a new version
 
