@@ -152,7 +152,8 @@ credential set, and the latest version replaces the old one in
   `intel471.credential.data.info_stealer` has the stealer family and the
   infected machine (host name, user, IP, OS, antivirus). Each field lists the
   values from every sighting, so with several sightings the values in different
-  fields aren't paired.
+  fields aren't paired. Reported machine IPs that aren't valid IP addresses are
+  kept in `intel471.credential.data.info_stealer.invalid_ip`.
 - `event.kind` is `alert`. `@timestamp` is when the credential was last updated.
 
 To limit volume, set **Affiliation**, for example to *My employees*.
@@ -176,6 +177,8 @@ To limit volume, set **Affiliation**, for example to *My employees*.
   time or the report's or credential's last update, not when it was ingested, so a short time
   range can be empty. Filter on `event.ingested` instead.
 - Enable **request tracing** temporarily to log requests and responses on the agent.
+  Don't enable it on the credential data stream: the trace holds the raw API
+  responses, including plaintext passwords and logins.
 
 ## Logs reference
 

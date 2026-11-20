@@ -120,6 +120,11 @@ def credential_pipeline_tests(credentials: list[dict]) -> None:
     # Defence in depth: a plaintext password that reaches the pipeline anyway.
     leaked = next(c for c in credentials if (c["data"].get("password") or {}).get("password_plain"))
     write_events("credential-plaintext-password", [leaked], CREDS_PIPELINE_DIR)
+    # Stealer logs can report a machine IP that isn't an IP address; it must not
+    # reach the ip-typed fields (the latest transform would stop on it).
+    stolen = copy.deepcopy(next(c for c in credentials if (c["data"].get("info_stealer") or {}).get("ip")))
+    stolen["data"]["info_stealer"]["ip"] = stolen["data"]["info_stealer"]["ip"][:1] + ["10.18.1.999", "2001:db8::1", "unknown"]
+    write_events("credential-invalid-stealer-ip", [without_plaintext(stolen)], CREDS_PIPELINE_DIR)
 
 
 def mock_rules(api: tuple[str, str], items: list[dict]) -> list[str]:

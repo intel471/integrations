@@ -136,6 +136,9 @@
             - name: ip
               type: ip
               description: IP addresses of the infected machines.
+            - name: invalid_ip
+              type: keyword
+              description: Values the stealer reported as the machine's IP address that aren't valid IP addresses.
             - name: isp
               type: keyword
               description: Internet service providers of the infected machines.
