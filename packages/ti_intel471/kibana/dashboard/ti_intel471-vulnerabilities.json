@@ -1,0 +1,479 @@
+{
+    "attributes": {
+        "controlGroupInput": {
+            "chainingSystem": "HIERARCHICAL",
+            "controlStyle": "oneLine",
+            "ignoreParentSettingsJSON": {
+                "ignoreFilters": false,
+                "ignoreQuery": false,
+                "ignoreTimerange": false,
+                "ignoreValidations": false
+            },
+            "panelsJSON": {
+                "01717bea-c910-5aba-af2f-085506677a64": {
+                    "explicitInput": {
+                        "dataViewId": "logs-*",
+                        "exclude": false,
+                        "existsSelected": false,
+                        "fieldName": "intel471.vulnerability.exploit_status",
+                        "id": "01717bea-c910-5aba-af2f-085506677a64",
+                        "searchTechnique": "prefix",
+                        "selectedOptions": [],
+                        "sort": {
+                            "by": "_count",
+                            "direction": "desc"
+                        },
+                        "title": "Exploit"
+                    },
+                    "grow": true,
+                    "order": 3,
+                    "type": "optionsListControl",
+                    "width": "medium"
+                },
+                "46a98301-1608-5ce4-9591-f92c435b7fe9": {
+                    "explicitInput": {
+                        "dataViewId": "logs-*",
+                        "exclude": false,
+                        "existsSelected": false,
+                        "fieldName": "vulnerability.severity",
+                        "id": "46a98301-1608-5ce4-9591-f92c435b7fe9",
+                        "searchTechnique": "prefix",
+                        "selectedOptions": [],
+                        "sort": {
+                            "by": "_count",
+                            "direction": "desc"
+                        },
+                        "title": "Risk"
+                    },
+                    "grow": true,
+                    "order": 2,
+                    "type": "optionsListControl",
+                    "width": "medium"
+                },
+                "8c26f019-3b31-55c4-8921-7324f054448d": {
+                    "explicitInput": {
+                        "dataViewId": "logs-*",
+                        "exclude": false,
+                        "existsSelected": false,
+                        "fieldName": "vulnerability.id",
+                        "id": "8c26f019-3b31-55c4-8921-7324f054448d",
+                        "searchTechnique": "wildcard",
+                        "selectedOptions": [],
+                        "sort": {
+                            "by": "_count",
+                            "direction": "desc"
+                        },
+                        "title": "CVE"
+                    },
+                    "grow": true,
+                    "order": 0,
+                    "type": "optionsListControl",
+                    "width": "medium"
+                },
+                "ce3d569e-8939-53fa-9e42-35c813c74859": {
+                    "explicitInput": {
+                        "dataViewId": "logs-*",
+                        "exclude": false,
+                        "existsSelected": false,
+                        "fieldName": "intel471.vulnerability.vendor_name",
+                        "id": "ce3d569e-8939-53fa-9e42-35c813c74859",
+                        "searchTechnique": "prefix",
+                        "selectedOptions": [],
+                        "sort": {
+                            "by": "_count",
+                            "direction": "desc"
+                        },
+                        "title": "Vendor"
+                    },
+                    "grow": true,
+                    "order": 4,
+                    "type": "optionsListControl",
+                    "width": "medium"
+                },
+                "e087e4c3-72f7-547a-8068-f4c662c3903e": {
+                    "explicitInput": {
+                        "dataViewId": "logs-*",
+                        "exclude": false,
+                        "existsSelected": false,
+                        "fieldName": "intel471.vulnerability.status",
+                        "id": "e087e4c3-72f7-547a-8068-f4c662c3903e",
+                        "searchTechnique": "prefix",
+                        "selectedOptions": [],
+                        "sort": {
+                            "by": "_count",
+                            "direction": "desc"
+                        },
+                        "title": "Report status"
+                    },
+                    "grow": true,
+                    "order": 1,
+                    "type": "optionsListControl",
+                    "width": "medium"
+                }
+            },
+            "showApplySelections": false
+        },
+        "description": "Intel 471 vulnerability reports, one per CVE, searchable by CVE and filterable by status, risk, exploitation and vendor.",
+        "kibanaSavedObjectMeta": {
+            "searchSourceJSON": {
+                "filter": [
+                    {
+                        "$state": {
+                            "store": "appState"
+                        },
+                        "meta": {
+                            "alias": null,
+                            "disabled": false,
+                            "field": "data_stream.dataset",
+                            "indexRefName": "kibanaSavedObjectMeta.searchSourceJSON.filter[0].meta.index",
+                            "key": "data_stream.dataset",
+                            "negate": false,
+                            "params": {
+                                "query": "ti_intel471.vulnerability"
+                            },
+                            "type": "phrase"
+                        },
+                        "query": {
+                            "match_phrase": {
+                                "data_stream.dataset": "ti_intel471.vulnerability"
+                            }
+                        }
+                    }
+                ],
+                "query": {
+                    "language": "kuery",
+                    "query": ""
+                }
+            }
+        },
+        "optionsJSON": {
+            "hidePanelTitles": false,
+            "syncColors": false,
+            "syncCursor": true,
+            "syncTooltips": false,
+            "useMargins": true
+        },
+        "panelsJSON": [
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "layout": "horizontal",
+                        "links": [
+                            {
+                                "destinationRefName": "link_3327b13e-9968-55ce-9c33-918e160b7970_dashboard",
+                                "id": "3327b13e-9968-55ce-9c33-918e160b7970",
+                                "label": "Overview",
+                                "options": {
+                                    "openInNewTab": false,
+                                    "useCurrentDateRange": true,
+                                    "useCurrentFilters": false
+                                },
+                                "order": 0,
+                                "type": "dashboardLink"
+                            },
+                            {
+                                "destinationRefName": "link_ca4f2a05-3e74-509a-b254-d46b171ccace_dashboard",
+                                "id": "ca4f2a05-3e74-509a-b254-d46b171ccace",
+                                "label": "Indicators",
+                                "options": {
+                                    "openInNewTab": false,
+                                    "useCurrentDateRange": true,
+                                    "useCurrentFilters": false
+                                },
+                                "order": 1,
+                                "type": "dashboardLink"
+                            },
+                            {
+                                "destinationRefName": "link_6043ad73-d865-5d50-b710-75a3513d14e9_dashboard",
+                                "id": "6043ad73-d865-5d50-b710-75a3513d14e9",
+                                "label": "Vulnerabilities",
+                                "options": {
+                                    "openInNewTab": false,
+                                    "useCurrentDateRange": true,
+                                    "useCurrentFilters": false
+                                },
+                                "order": 2,
+                                "type": "dashboardLink"
+                            },
+                            {
+                                "destinationRefName": "link_c370f3e8-f3fe-5334-9526-c210701c0b58_dashboard",
+                                "id": "c370f3e8-f3fe-5334-9526-c210701c0b58",
+                                "label": "Credentials",
+                                "options": {
+                                    "openInNewTab": false,
+                                    "useCurrentDateRange": true,
+                                    "useCurrentFilters": false
+                                },
+                                "order": 3,
+                                "type": "dashboardLink"
+                            }
+                        ]
+                    },
+                    "enhancements": {},
+                    "hidePanelTitles": true
+                },
+                "gridData": {
+                    "h": 4,
+                    "i": "0bf74c19-2925-5d7a-8247-7ce1f3ab320f",
+                    "w": 20,
+                    "x": 0,
+                    "y": 0
+                },
+                "panelIndex": "0bf74c19-2925-5d7a-8247-7ce1f3ab320f",
+                "title": "",
+                "type": "links"
+            },
+            {
+                "embeddableConfig": {
+                    "enhancements": {
+                        "dynamicActions": {
+                            "events": []
+                        }
+                    },
+                    "hidePanelTitles": true,
+                    "savedVis": {
+                        "data": {
+                            "aggs": [],
+                            "searchSource": {
+                                "filter": [],
+                                "query": {
+                                    "language": "kuery",
+                                    "query": ""
+                                }
+                            }
+                        },
+                        "description": "",
+                        "params": {
+                            "fontSize": 11,
+                            "markdown": "Vulnerability reports from the Intel 471 Reports API, one row per report. The time picker filters on when a report was last updated. Find a report with the **CVE** control; expand a row to read the whole report, including its summary, underground activity and countermeasures.",
+                            "openLinksInNewTab": false
+                        },
+                        "title": "",
+                        "type": "markdown",
+                        "uiState": {}
+                    }
+                },
+                "gridData": {
+                    "h": 4,
+                    "i": "0fd6f46c-a00f-5250-92ce-1634f0dfa23b",
+                    "w": 28,
+                    "x": 20,
+                    "y": 0
+                },
+                "panelIndex": "0fd6f46c-a00f-5250-92ce-1634f0dfa23b",
+                "type": "visualization"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "8193b546e7a0fe254690185881409ac670337f782d9419d0af5ad4f03ffb317e": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldFormats": {},
+                                    "id": "8193b546e7a0fe254690185881409ac670337f782d9419d0af5ad4f03ffb317e",
+                                    "name": "logs-ti_intel471_latest.vulnerability",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "timeFieldName": "@timestamp",
+                                    "title": "logs-ti_intel471_latest.vulnerability",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "indexPatternRefs": [
+                                        {
+                                            "id": "8193b546e7a0fe254690185881409ac670337f782d9419d0af5ad4f03ffb317e",
+                                            "timeField": "@timestamp",
+                                            "title": "logs-ti_intel471_latest.vulnerability"
+                                        }
+                                    ],
+                                    "layers": {
+                                        "e98a20a5-4900-5c15-b7d0-487154ee3380": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "Updated",
+                                                    "customLabel": false,
+                                                    "fieldName": "Updated",
+                                                    "label": "Updated",
+                                                    "meta": {
+                                                        "type": "date"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "Reports",
+                                                    "customLabel": false,
+                                                    "fieldName": "Reports",
+                                                    "inMetricDimension": true,
+                                                    "label": "Reports",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    }
+                                                }
+                                            ],
+                                            "index": "8193b546e7a0fe254690185881409ac670337f782d9419d0af5ad4f03ffb317e",
+                                            "query": {
+                                                "esql": "FROM logs-ti_intel471_latest.vulnerability\n| STATS Reports = COUNT(*) BY Updated = BUCKET(@timestamp, 60, ?_tstart, ?_tend)"
+                                            },
+                                            "timeField": "@timestamp"
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [],
+                            "needsRefresh": false,
+                            "query": {
+                                "esql": "FROM logs-ti_intel471_latest.vulnerability\n| STATS Reports = COUNT(*) BY Updated = BUCKET(@timestamp, 60, ?_tstart, ?_tend)"
+                            },
+                            "visualization": {
+                                "axisTitlesVisibilitySettings": {
+                                    "x": false,
+                                    "yLeft": false,
+                                    "yRight": false
+                                },
+                                "layers": [
+                                    {
+                                        "accessors": [
+                                            "Reports"
+                                        ],
+                                        "layerId": "e98a20a5-4900-5c15-b7d0-487154ee3380",
+                                        "layerType": "data",
+                                        "seriesType": "bar",
+                                        "xAccessor": "Updated"
+                                    }
+                                ],
+                                "legend": {
+                                    "isVisible": false,
+                                    "position": "right"
+                                },
+                                "preferredSeriesType": "bar",
+                                "valueLabels": "hide"
+                            }
+                        },
+                        "title": "Reports by last updated",
+                        "type": "lens",
+                        "visualizationType": "lnsXY"
+                    },
+                    "enhancements": {
+                        "dynamicActions": {
+                            "events": []
+                        }
+                    },
+                    "filters": [],
+                    "query": {
+                        "esql": "FROM logs-ti_intel471_latest.vulnerability\n| STATS Reports = COUNT(*) BY Updated = BUCKET(@timestamp, 60, ?_tstart, ?_tend)"
+                    },
+                    "syncColors": false,
+                    "syncCursor": true,
+                    "syncTooltips": false
+                },
+                "gridData": {
+                    "h": 12,
+                    "i": "d9632b14-1e84-502c-831e-29f8b407e8a7",
+                    "w": 48,
+                    "x": 0,
+                    "y": 4
+                },
+                "panelIndex": "d9632b14-1e84-502c-831e-29f8b407e8a7",
+                "title": "Reports by last updated",
+                "type": "lens"
+            },
+            {
+                "embeddableConfig": {
+                    "description": "",
+                    "enhancements": {
+                        "dynamicActions": {
+                            "events": []
+                        }
+                    }
+                },
+                "gridData": {
+                    "h": 24,
+                    "i": "0d7e5a0e-796a-5272-9bdd-1db0bbb2a6d1",
+                    "w": 48,
+                    "x": 0,
+                    "y": 16
+                },
+                "panelIndex": "0d7e5a0e-796a-5272-9bdd-1db0bbb2a6d1",
+                "panelRefName": "panel_0d7e5a0e-796a-5272-9bdd-1db0bbb2a6d1",
+                "title": "Vulnerability reports",
+                "type": "search"
+            }
+        ],
+        "refreshInterval": {
+            "pause": true,
+            "value": 60000
+        },
+        "timeFrom": "now-30d",
+        "timeRestore": true,
+        "timeTo": "now",
+        "title": "[Logs Intel 471] Vulnerabilities",
+        "version": 1
+    },
+    "coreMigrationVersion": "8.8.0",
+    "created_at": "2026-11-20T12:47:34.725Z",
+    "id": "ti_intel471-vulnerabilities",
+    "references": [
+        {
+            "id": "ti_intel471-overview",
+            "name": "0bf74c19-2925-5d7a-8247-7ce1f3ab320f:link_3327b13e-9968-55ce-9c33-918e160b7970_dashboard",
+            "type": "dashboard"
+        },
+        {
+            "id": "ti_intel471-indicators",
+            "name": "0bf74c19-2925-5d7a-8247-7ce1f3ab320f:link_ca4f2a05-3e74-509a-b254-d46b171ccace_dashboard",
+            "type": "dashboard"
+        },
+        {
+            "id": "ti_intel471-vulnerabilities",
+            "name": "0bf74c19-2925-5d7a-8247-7ce1f3ab320f:link_6043ad73-d865-5d50-b710-75a3513d14e9_dashboard",
+            "type": "dashboard"
+        },
+        {
+            "id": "ti_intel471-credentials",
+            "name": "0bf74c19-2925-5d7a-8247-7ce1f3ab320f:link_c370f3e8-f3fe-5334-9526-c210701c0b58_dashboard",
+            "type": "dashboard"
+        },
+        {
+            "id": "ti_intel471-vulnerability-reports",
+            "name": "0d7e5a0e-796a-5272-9bdd-1db0bbb2a6d1:panel_0d7e5a0e-796a-5272-9bdd-1db0bbb2a6d1",
+            "type": "search"
+        },
+        {
+            "id": "logs-*",
+            "name": "controlGroup_8c26f019-3b31-55c4-8921-7324f054448d:optionsListDataView",
+            "type": "index-pattern"
+        },
+        {
+            "id": "logs-*",
+            "name": "controlGroup_e087e4c3-72f7-547a-8068-f4c662c3903e:optionsListDataView",
+            "type": "index-pattern"
+        },
+        {
+            "id": "logs-*",
+            "name": "controlGroup_46a98301-1608-5ce4-9591-f92c435b7fe9:optionsListDataView",
+            "type": "index-pattern"
+        },
+        {
+            "id": "logs-*",
+            "name": "controlGroup_01717bea-c910-5aba-af2f-085506677a64:optionsListDataView",
+            "type": "index-pattern"
+        },
+        {
+            "id": "logs-*",
+            "name": "controlGroup_ce3d569e-8939-53fa-9e42-35c813c74859:optionsListDataView",
+            "type": "index-pattern"
+        },
+        {
+            "id": "logs-*",
+            "name": "kibanaSavedObjectMeta.searchSourceJSON.filter[0].meta.index",
+            "type": "index-pattern"
+        }
+    ],
+    "type": "dashboard",
+    "typeMigrationVersion": "10.3.0"
+}

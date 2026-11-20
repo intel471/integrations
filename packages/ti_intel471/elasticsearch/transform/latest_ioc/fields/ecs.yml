@@ -2,3 +2,17 @@
 # detection rules that use it as the timestamp override.
 - name: event.ingested
   external: ecs
+# Used by the dashboards' ES|QL panels, which fail on a field the index
+# doesn't map yet (for example before the first file indicator arrives).
+- name: threat.indicator.name
+  external: ecs
+- name: threat.indicator.type
+  external: ecs
+- name: threat.indicator.confidence
+  external: ecs
+- name: threat.indicator.file.hash.sha256
+  external: ecs
+- name: threat.software.name
+  external: ecs
+- name: threat.tactic.name
+  external: ecs

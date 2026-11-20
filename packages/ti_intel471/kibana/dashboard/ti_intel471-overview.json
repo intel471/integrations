@@ -1,0 +1,491 @@
+{
+    "attributes": {
+        "controlGroupInput": {
+            "chainingSystem": "HIERARCHICAL",
+            "controlStyle": "oneLine",
+            "ignoreParentSettingsJSON": {
+                "ignoreFilters": false,
+                "ignoreQuery": false,
+                "ignoreTimerange": false,
+                "ignoreValidations": false
+            },
+            "panelsJSON": {},
+            "showApplySelections": false
+        },
+        "description": "Health of the Intel 471 integration: per data stream, when it last ran, when data last arrived, how much arrived, and collection errors.",
+        "kibanaSavedObjectMeta": {
+            "searchSourceJSON": {
+                "filter": [],
+                "query": {
+                    "language": "kuery",
+                    "query": ""
+                }
+            }
+        },
+        "optionsJSON": {
+            "hidePanelTitles": false,
+            "syncColors": false,
+            "syncCursor": true,
+            "syncTooltips": false,
+            "useMargins": true
+        },
+        "panelsJSON": [
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "layout": "horizontal",
+                        "links": [
+                            {
+                                "destinationRefName": "link_4998fe78-184c-5b2d-b827-34963973b9ae_dashboard",
+                                "id": "4998fe78-184c-5b2d-b827-34963973b9ae",
+                                "label": "Overview",
+                                "options": {
+                                    "openInNewTab": false,
+                                    "useCurrentDateRange": true,
+                                    "useCurrentFilters": false
+                                },
+                                "order": 0,
+                                "type": "dashboardLink"
+                            },
+                            {
+                                "destinationRefName": "link_da025576-1190-55e7-ba7d-8ae712e77738_dashboard",
+                                "id": "da025576-1190-55e7-ba7d-8ae712e77738",
+                                "label": "Indicators",
+                                "options": {
+                                    "openInNewTab": false,
+                                    "useCurrentDateRange": true,
+                                    "useCurrentFilters": false
+                                },
+                                "order": 1,
+                                "type": "dashboardLink"
+                            },
+                            {
+                                "destinationRefName": "link_e3dffda6-7b9b-5437-82a2-269e8e98e2de_dashboard",
+                                "id": "e3dffda6-7b9b-5437-82a2-269e8e98e2de",
+                                "label": "Vulnerabilities",
+                                "options": {
+                                    "openInNewTab": false,
+                                    "useCurrentDateRange": true,
+                                    "useCurrentFilters": false
+                                },
+                                "order": 2,
+                                "type": "dashboardLink"
+                            },
+                            {
+                                "destinationRefName": "link_4372f5c7-21fe-5a57-823c-f62b6e0ddd6c_dashboard",
+                                "id": "4372f5c7-21fe-5a57-823c-f62b6e0ddd6c",
+                                "label": "Credentials",
+                                "options": {
+                                    "openInNewTab": false,
+                                    "useCurrentDateRange": true,
+                                    "useCurrentFilters": false
+                                },
+                                "order": 3,
+                                "type": "dashboardLink"
+                            }
+                        ]
+                    },
+                    "enhancements": {},
+                    "hidePanelTitles": true
+                },
+                "gridData": {
+                    "h": 4,
+                    "i": "48373895-04a1-59f2-8fc5-17440814f4a1",
+                    "w": 20,
+                    "x": 0,
+                    "y": 0
+                },
+                "panelIndex": "48373895-04a1-59f2-8fc5-17440814f4a1",
+                "title": "",
+                "type": "links"
+            },
+            {
+                "embeddableConfig": {
+                    "enhancements": {
+                        "dynamicActions": {
+                            "events": []
+                        }
+                    },
+                    "hidePanelTitles": true,
+                    "savedVis": {
+                        "data": {
+                            "aggs": [],
+                            "searchSource": {
+                                "filter": [],
+                                "query": {
+                                    "language": "kuery",
+                                    "query": ""
+                                }
+                            }
+                        },
+                        "description": "",
+                        "params": {
+                            "fontSize": 11,
+                            "markdown": "Health of the Intel 471 integration, always as of now (the time picker doesn't apply). **Last run** is when the agent last ran the stream, whether or not it fetched anything (from the agent's monitoring metrics; empty if it hasn't run in 24 hours or agent monitoring is off); **Last data received** is when data last arrived. A stream that hasn't run for longer than its interval, or has errors, needs a look.",
+                            "openLinksInNewTab": false
+                        },
+                        "title": "",
+                        "type": "markdown",
+                        "uiState": {}
+                    }
+                },
+                "gridData": {
+                    "h": 4,
+                    "i": "d896d1c3-a1e9-52e4-9f8d-7bb09b2cfbb5",
+                    "w": 28,
+                    "x": 20,
+                    "y": 0
+                },
+                "panelIndex": "d896d1c3-a1e9-52e4-9f8d-7bb09b2cfbb5",
+                "type": "visualization"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "21f83607ba733f523979ec21f7db131253b07938b6dbb3f4fd3ddb03d320ae12": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldFormats": {},
+                                    "id": "21f83607ba733f523979ec21f7db131253b07938b6dbb3f4fd3ddb03d320ae12",
+                                    "name": "logs-ti_intel471.*-*, metrics-elastic_agent.filebeat_input-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-ti_intel471.*-*, metrics-elastic_agent.filebeat_input-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "indexPatternRefs": [
+                                        {
+                                            "id": "21f83607ba733f523979ec21f7db131253b07938b6dbb3f4fd3ddb03d320ae12",
+                                            "title": "logs-ti_intel471.*-*, metrics-elastic_agent.filebeat_input-*"
+                                        }
+                                    ],
+                                    "layers": {
+                                        "c41b7bf4-dab0-521f-9f64-0b76d0e10c2e": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "Stream",
+                                                    "customLabel": false,
+                                                    "fieldName": "Stream",
+                                                    "label": "Stream",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "Last run",
+                                                    "customLabel": false,
+                                                    "fieldName": "Last run",
+                                                    "label": "Last run",
+                                                    "meta": {
+                                                        "type": "date"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "Last data received",
+                                                    "customLabel": false,
+                                                    "fieldName": "Last data received",
+                                                    "label": "Last data received",
+                                                    "meta": {
+                                                        "type": "date"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "Received (1h)",
+                                                    "customLabel": false,
+                                                    "fieldName": "Received (1h)",
+                                                    "label": "Received (1h)",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "Received (24h)",
+                                                    "customLabel": false,
+                                                    "fieldName": "Received (24h)",
+                                                    "label": "Received (24h)",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "Received (5 days)",
+                                                    "customLabel": false,
+                                                    "fieldName": "Received (5 days)",
+                                                    "label": "Received (5 days)",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "Errors (24h)",
+                                                    "customLabel": false,
+                                                    "fieldName": "Errors (24h)",
+                                                    "label": "Errors (24h)",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    }
+                                                }
+                                            ],
+                                            "index": "21f83607ba733f523979ec21f7db131253b07938b6dbb3f4fd3ddb03d320ae12",
+                                            "query": {
+                                                "esql": "FROM logs-ti_intel471.*-*, metrics-elastic_agent.filebeat_input-*\n| WHERE (event.ingested \u003e= NOW() - 5 days AND data_stream.dataset LIKE \"ti_intel471.*\")\n     OR (@timestamp \u003e= NOW() - 24 hours AND filebeat_input.id LIKE \"cel-ti_intel471.*\")\n| EVAL Stream = COALESCE(REPLACE(filebeat_input.id, \"^cel-ti_intel471[.]([a-z]+)-.*\", \"$1\"),\n                         REPLACE(data_stream.dataset, \"^ti_intel471[.]\", \"\")),\n       run = TO_LONG(filebeat_input.cel_executions),\n       data = filebeat_input.id IS NULL,\n       ok = data AND error.message IS NULL\n| STATS since = MIN(@timestamp),\n        received = MAX(CASE(ok, event.ingested, null)),\n        r1h = SUM(CASE(ok AND event.ingested \u003e= NOW() - 1 hour, 1, 0)),\n        r24h = SUM(CASE(ok AND event.ingested \u003e= NOW() - 24 hours, 1, 0)),\n        r5d = SUM(CASE(ok, 1, 0)),\n        e24h = SUM(CASE(data AND NOT ok AND event.ingested \u003e= NOW() - 24 hours, 1, 0))\n  BY Stream, run\n| STATS last_change = MAX(CASE(run IS NOT NULL, since, null)),\n        first_sample = MIN(CASE(run IS NOT NULL, since, null)),\n        `Last data received` = MAX(received),\n        `Received (1h)` = SUM(r1h), `Received (24h)` = SUM(r24h), `Received (5 days)` = SUM(r5d),\n        `Errors (24h)` = SUM(e24h)\n  BY Stream\n| EVAL `Last run` = CASE(last_change \u003e first_sample, last_change, null)\n| KEEP Stream, `Last run`, `Last data received`, `Received (1h)`, `Received (24h)`, `Received (5 days)`, `Errors (24h)`\n| SORT Stream"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [],
+                            "needsRefresh": false,
+                            "query": {
+                                "esql": "FROM logs-ti_intel471.*-*, metrics-elastic_agent.filebeat_input-*\n| WHERE (event.ingested \u003e= NOW() - 5 days AND data_stream.dataset LIKE \"ti_intel471.*\")\n     OR (@timestamp \u003e= NOW() - 24 hours AND filebeat_input.id LIKE \"cel-ti_intel471.*\")\n| EVAL Stream = COALESCE(REPLACE(filebeat_input.id, \"^cel-ti_intel471[.]([a-z]+)-.*\", \"$1\"),\n                         REPLACE(data_stream.dataset, \"^ti_intel471[.]\", \"\")),\n       run = TO_LONG(filebeat_input.cel_executions),\n       data = filebeat_input.id IS NULL,\n       ok = data AND error.message IS NULL\n| STATS since = MIN(@timestamp),\n        received = MAX(CASE(ok, event.ingested, null)),\n        r1h = SUM(CASE(ok AND event.ingested \u003e= NOW() - 1 hour, 1, 0)),\n        r24h = SUM(CASE(ok AND event.ingested \u003e= NOW() - 24 hours, 1, 0)),\n        r5d = SUM(CASE(ok, 1, 0)),\n        e24h = SUM(CASE(data AND NOT ok AND event.ingested \u003e= NOW() - 24 hours, 1, 0))\n  BY Stream, run\n| STATS last_change = MAX(CASE(run IS NOT NULL, since, null)),\n        first_sample = MIN(CASE(run IS NOT NULL, since, null)),\n        `Last data received` = MAX(received),\n        `Received (1h)` = SUM(r1h), `Received (24h)` = SUM(r24h), `Received (5 days)` = SUM(r5d),\n        `Errors (24h)` = SUM(e24h)\n  BY Stream\n| EVAL `Last run` = CASE(last_change \u003e first_sample, last_change, null)\n| KEEP Stream, `Last run`, `Last data received`, `Received (1h)`, `Received (24h)`, `Received (5 days)`, `Errors (24h)`\n| SORT Stream"
+                            },
+                            "visualization": {
+                                "columns": [
+                                    {
+                                        "columnId": "Stream",
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "Last run",
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "Last data received",
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "Received (1h)",
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "Received (24h)",
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "Received (5 days)",
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "Errors (24h)",
+                                        "isTransposed": false
+                                    }
+                                ],
+                                "layerId": "c41b7bf4-dab0-521f-9f64-0b76d0e10c2e",
+                                "layerType": "data",
+                                "paging": {
+                                    "enabled": true,
+                                    "size": 10
+                                }
+                            }
+                        },
+                        "title": "Collection health",
+                        "type": "lens",
+                        "visualizationType": "lnsDatatable"
+                    },
+                    "enhancements": {
+                        "dynamicActions": {
+                            "events": []
+                        }
+                    },
+                    "filters": [],
+                    "query": {
+                        "esql": "FROM logs-ti_intel471.*-*, metrics-elastic_agent.filebeat_input-*\n| WHERE (event.ingested \u003e= NOW() - 5 days AND data_stream.dataset LIKE \"ti_intel471.*\")\n     OR (@timestamp \u003e= NOW() - 24 hours AND filebeat_input.id LIKE \"cel-ti_intel471.*\")\n| EVAL Stream = COALESCE(REPLACE(filebeat_input.id, \"^cel-ti_intel471[.]([a-z]+)-.*\", \"$1\"),\n                         REPLACE(data_stream.dataset, \"^ti_intel471[.]\", \"\")),\n       run = TO_LONG(filebeat_input.cel_executions),\n       data = filebeat_input.id IS NULL,\n       ok = data AND error.message IS NULL\n| STATS since = MIN(@timestamp),\n        received = MAX(CASE(ok, event.ingested, null)),\n        r1h = SUM(CASE(ok AND event.ingested \u003e= NOW() - 1 hour, 1, 0)),\n        r24h = SUM(CASE(ok AND event.ingested \u003e= NOW() - 24 hours, 1, 0)),\n        r5d = SUM(CASE(ok, 1, 0)),\n        e24h = SUM(CASE(data AND NOT ok AND event.ingested \u003e= NOW() - 24 hours, 1, 0))\n  BY Stream, run\n| STATS last_change = MAX(CASE(run IS NOT NULL, since, null)),\n        first_sample = MIN(CASE(run IS NOT NULL, since, null)),\n        `Last data received` = MAX(received),\n        `Received (1h)` = SUM(r1h), `Received (24h)` = SUM(r24h), `Received (5 days)` = SUM(r5d),\n        `Errors (24h)` = SUM(e24h)\n  BY Stream\n| EVAL `Last run` = CASE(last_change \u003e first_sample, last_change, null)\n| KEEP Stream, `Last run`, `Last data received`, `Received (1h)`, `Received (24h)`, `Received (5 days)`, `Errors (24h)`\n| SORT Stream"
+                    },
+                    "syncColors": false,
+                    "syncCursor": true,
+                    "syncTooltips": false
+                },
+                "gridData": {
+                    "h": 8,
+                    "i": "1076bb2d-cdec-5e5f-bfec-aa86e166b088",
+                    "w": 48,
+                    "x": 0,
+                    "y": 4
+                },
+                "panelIndex": "1076bb2d-cdec-5e5f-bfec-aa86e166b088",
+                "title": "Collection health",
+                "type": "lens"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "30cb8876903553d98722587478b89c41012dd1b96a544bdfa0ef33942c834ed4": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldFormats": {},
+                                    "id": "30cb8876903553d98722587478b89c41012dd1b96a544bdfa0ef33942c834ed4",
+                                    "name": "logs-ti_intel471.*-*",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "title": "logs-ti_intel471.*-*",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "indexPatternRefs": [
+                                        {
+                                            "id": "30cb8876903553d98722587478b89c41012dd1b96a544bdfa0ef33942c834ed4",
+                                            "title": "logs-ti_intel471.*-*"
+                                        }
+                                    ],
+                                    "layers": {
+                                        "0341868f-9869-541b-9b01-17d9d24f97a2": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "Last seen",
+                                                    "customLabel": false,
+                                                    "fieldName": "Last seen",
+                                                    "label": "Last seen",
+                                                    "meta": {
+                                                        "type": "date"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "Stream",
+                                                    "customLabel": false,
+                                                    "fieldName": "Stream",
+                                                    "label": "Stream",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "Errors",
+                                                    "customLabel": false,
+                                                    "fieldName": "Errors",
+                                                    "label": "Errors",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "Error",
+                                                    "customLabel": false,
+                                                    "fieldName": "Error",
+                                                    "label": "Error",
+                                                    "meta": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            ],
+                                            "index": "30cb8876903553d98722587478b89c41012dd1b96a544bdfa0ef33942c834ed4",
+                                            "query": {
+                                                "esql": "FROM logs-ti_intel471.*-*\n| WHERE error.message IS NOT NULL AND event.ingested \u003e= NOW() - 5 days\n| STATS Errors = COUNT(*), `Last seen` = MAX(event.ingested) BY Stream = data_stream.dataset, Error = error.message\n| EVAL Stream = REPLACE(Stream, \"^ti_intel471[.]\", \"\")\n| SORT `Last seen` DESC\n| LIMIT 50"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [],
+                            "needsRefresh": false,
+                            "query": {
+                                "esql": "FROM logs-ti_intel471.*-*\n| WHERE error.message IS NOT NULL AND event.ingested \u003e= NOW() - 5 days\n| STATS Errors = COUNT(*), `Last seen` = MAX(event.ingested) BY Stream = data_stream.dataset, Error = error.message\n| EVAL Stream = REPLACE(Stream, \"^ti_intel471[.]\", \"\")\n| SORT `Last seen` DESC\n| LIMIT 50"
+                            },
+                            "visualization": {
+                                "columns": [
+                                    {
+                                        "columnId": "Last seen",
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "Stream",
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "Errors",
+                                        "isTransposed": false
+                                    },
+                                    {
+                                        "columnId": "Error",
+                                        "isTransposed": false
+                                    }
+                                ],
+                                "headerRowHeight": "single",
+                                "layerId": "0341868f-9869-541b-9b01-17d9d24f97a2",
+                                "layerType": "data",
+                                "paging": {
+                                    "enabled": true,
+                                    "size": 10
+                                },
+                                "rowHeight": "auto"
+                            }
+                        },
+                        "title": "Collection errors (last 5 days)",
+                        "type": "lens",
+                        "visualizationType": "lnsDatatable"
+                    },
+                    "enhancements": {
+                        "dynamicActions": {
+                            "events": []
+                        }
+                    },
+                    "filters": [],
+                    "query": {
+                        "esql": "FROM logs-ti_intel471.*-*\n| WHERE error.message IS NOT NULL AND event.ingested \u003e= NOW() - 5 days\n| STATS Errors = COUNT(*), `Last seen` = MAX(event.ingested) BY Stream = data_stream.dataset, Error = error.message\n| EVAL Stream = REPLACE(Stream, \"^ti_intel471[.]\", \"\")\n| SORT `Last seen` DESC\n| LIMIT 50"
+                    },
+                    "syncColors": false,
+                    "syncCursor": true,
+                    "syncTooltips": false
+                },
+                "gridData": {
+                    "h": 14,
+                    "i": "adf52879-b3a7-5b3b-a4e1-f55a352bd0c4",
+                    "w": 48,
+                    "x": 0,
+                    "y": 12
+                },
+                "panelIndex": "adf52879-b3a7-5b3b-a4e1-f55a352bd0c4",
+                "title": "Collection errors (last 5 days)",
+                "type": "lens"
+            }
+        ],
+        "refreshInterval": {
+            "pause": true,
+            "value": 60000
+        },
+        "timeFrom": "now-30d",
+        "timeRestore": true,
+        "timeTo": "now",
+        "title": "[Logs Intel 471] Overview",
+        "version": 1
+    },
+    "coreMigrationVersion": "8.8.0",
+    "created_at": "2026-11-20T12:47:34.725Z",
+    "id": "ti_intel471-overview",
+    "references": [
+        {
+            "id": "ti_intel471-overview",
+            "name": "48373895-04a1-59f2-8fc5-17440814f4a1:link_4998fe78-184c-5b2d-b827-34963973b9ae_dashboard",
+            "type": "dashboard"
+        },
+        {
+            "id": "ti_intel471-indicators",
+            "name": "48373895-04a1-59f2-8fc5-17440814f4a1:link_da025576-1190-55e7-ba7d-8ae712e77738_dashboard",
+            "type": "dashboard"
+        },
+        {
+            "id": "ti_intel471-vulnerabilities",
+            "name": "48373895-04a1-59f2-8fc5-17440814f4a1:link_e3dffda6-7b9b-5437-82a2-269e8e98e2de_dashboard",
+            "type": "dashboard"
+        },
+        {
+            "id": "ti_intel471-credentials",
+            "name": "48373895-04a1-59f2-8fc5-17440814f4a1:link_4372f5c7-21fe-5a57-823c-f62b6e0ddd6c_dashboard",
+            "type": "dashboard"
+        }
+    ],
+    "type": "dashboard",
+    "typeMigrationVersion": "10.3.0"
+}

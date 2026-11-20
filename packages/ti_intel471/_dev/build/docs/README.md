@@ -158,6 +158,32 @@ credential set, and the latest version replaces the old one in
 
 To limit volume, set **Affiliation**, for example to *My employees*.
 
+## Dashboards
+
+The package has four dashboards, linked to each other:
+
+- **[Logs Intel 471] Overview**: the health of the integration, as of now. Per
+  data stream: when it last ran, whether or not it fetched anything (from the
+  agent's monitoring metrics, so only with agent monitoring on), when data last
+  arrived, how much arrived in the last hour, 24 hours and 5 days, and errors in
+  the last 24 hours; below, the collection errors of the last 5 days.
+- **[Logs Intel 471] Indicators**: active indicators over time and the list of
+  them, filtered by type, malware family, confidence or the indicator value.
+  Expand a row to see the whole indicator.
+- **[Logs Intel 471] Vulnerabilities**: reports over time and the list of them,
+  filtered by CVE, report status, risk, exploitation or vendor. Expand a row to
+  read the whole report.
+- **[Logs Intel 471] Credentials**: credentials over time and the list of them,
+  filtered by login, affiliation (for example your employees and VIP emails),
+  monitored domain or password strength. Expand a row to see the whole
+  credential.
+
+The stream dashboards read the latest indices, so each indicator, report or
+credential is counted once, in its current version. They open on the last 30
+days; the time picker filters on `@timestamp` (last seen or last updated, not
+ingestion time). The Overview always shows the current state and ignores the
+time picker.
+
 ## Troubleshooting
 
 - `401`/`403` in `error.message`: check the Client ID/Secret and that your

@@ -1,0 +1,454 @@
+{
+    "attributes": {
+        "controlGroupInput": {
+            "chainingSystem": "HIERARCHICAL",
+            "controlStyle": "oneLine",
+            "ignoreParentSettingsJSON": {
+                "ignoreFilters": false,
+                "ignoreQuery": false,
+                "ignoreTimerange": false,
+                "ignoreValidations": false
+            },
+            "panelsJSON": {
+                "50e49237-757d-585e-85ab-72600b96f43e": {
+                    "explicitInput": {
+                        "dataViewId": "logs-*",
+                        "exclude": false,
+                        "existsSelected": false,
+                        "fieldName": "intel471.indicator.type",
+                        "id": "50e49237-757d-585e-85ab-72600b96f43e",
+                        "searchTechnique": "prefix",
+                        "selectedOptions": [],
+                        "sort": {
+                            "by": "_count",
+                            "direction": "desc"
+                        },
+                        "title": "Indicator type"
+                    },
+                    "grow": true,
+                    "order": 1,
+                    "type": "optionsListControl",
+                    "width": "medium"
+                },
+                "616d167a-9d2b-5e2e-8f7e-ddfd2e2d9074": {
+                    "explicitInput": {
+                        "dataViewId": "logs-*",
+                        "exclude": false,
+                        "existsSelected": false,
+                        "fieldName": "threat.software.name",
+                        "id": "616d167a-9d2b-5e2e-8f7e-ddfd2e2d9074",
+                        "searchTechnique": "prefix",
+                        "selectedOptions": [],
+                        "sort": {
+                            "by": "_count",
+                            "direction": "desc"
+                        },
+                        "title": "Malware family"
+                    },
+                    "grow": true,
+                    "order": 2,
+                    "type": "optionsListControl",
+                    "width": "medium"
+                },
+                "c42625e2-7d54-579e-89f4-64f741439539": {
+                    "explicitInput": {
+                        "dataViewId": "logs-*",
+                        "exclude": false,
+                        "existsSelected": false,
+                        "fieldName": "threat.indicator.name",
+                        "id": "c42625e2-7d54-579e-89f4-64f741439539",
+                        "searchTechnique": "wildcard",
+                        "selectedOptions": [],
+                        "sort": {
+                            "by": "_count",
+                            "direction": "desc"
+                        },
+                        "title": "Indicator"
+                    },
+                    "grow": true,
+                    "order": 0,
+                    "type": "optionsListControl",
+                    "width": "medium"
+                },
+                "efacda91-8581-560f-815f-220499222304": {
+                    "explicitInput": {
+                        "dataViewId": "logs-*",
+                        "exclude": false,
+                        "existsSelected": false,
+                        "fieldName": "threat.indicator.confidence",
+                        "id": "efacda91-8581-560f-815f-220499222304",
+                        "searchTechnique": "prefix",
+                        "selectedOptions": [],
+                        "sort": {
+                            "by": "_count",
+                            "direction": "desc"
+                        },
+                        "title": "Confidence"
+                    },
+                    "grow": true,
+                    "order": 3,
+                    "type": "optionsListControl",
+                    "width": "medium"
+                }
+            },
+            "showApplySelections": false
+        },
+        "description": "Active Intel 471 malware indicators (URLs, IPs, file hashes, domains, email addresses and YARA rules) from the latest IOC index, searchable by value.",
+        "kibanaSavedObjectMeta": {
+            "searchSourceJSON": {
+                "filter": [
+                    {
+                        "$state": {
+                            "store": "appState"
+                        },
+                        "meta": {
+                            "alias": null,
+                            "disabled": false,
+                            "field": "data_stream.dataset",
+                            "indexRefName": "kibanaSavedObjectMeta.searchSourceJSON.filter[0].meta.index",
+                            "key": "data_stream.dataset",
+                            "negate": false,
+                            "params": {
+                                "query": "ti_intel471.indicator"
+                            },
+                            "type": "phrase"
+                        },
+                        "query": {
+                            "match_phrase": {
+                                "data_stream.dataset": "ti_intel471.indicator"
+                            }
+                        }
+                    }
+                ],
+                "query": {
+                    "language": "kuery",
+                    "query": ""
+                }
+            }
+        },
+        "optionsJSON": {
+            "hidePanelTitles": false,
+            "syncColors": false,
+            "syncCursor": true,
+            "syncTooltips": false,
+            "useMargins": true
+        },
+        "panelsJSON": [
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "layout": "horizontal",
+                        "links": [
+                            {
+                                "destinationRefName": "link_a31ada39-1c6b-5140-ac71-fc4d63afc28c_dashboard",
+                                "id": "a31ada39-1c6b-5140-ac71-fc4d63afc28c",
+                                "label": "Overview",
+                                "options": {
+                                    "openInNewTab": false,
+                                    "useCurrentDateRange": true,
+                                    "useCurrentFilters": false
+                                },
+                                "order": 0,
+                                "type": "dashboardLink"
+                            },
+                            {
+                                "destinationRefName": "link_fbea65a7-189e-5158-9522-609e0f5ea11c_dashboard",
+                                "id": "fbea65a7-189e-5158-9522-609e0f5ea11c",
+                                "label": "Indicators",
+                                "options": {
+                                    "openInNewTab": false,
+                                    "useCurrentDateRange": true,
+                                    "useCurrentFilters": false
+                                },
+                                "order": 1,
+                                "type": "dashboardLink"
+                            },
+                            {
+                                "destinationRefName": "link_63742144-1136-514b-af0b-4f58fe4fa049_dashboard",
+                                "id": "63742144-1136-514b-af0b-4f58fe4fa049",
+                                "label": "Vulnerabilities",
+                                "options": {
+                                    "openInNewTab": false,
+                                    "useCurrentDateRange": true,
+                                    "useCurrentFilters": false
+                                },
+                                "order": 2,
+                                "type": "dashboardLink"
+                            },
+                            {
+                                "destinationRefName": "link_487178c2-349e-57f9-bbaf-48dcbdc1f68b_dashboard",
+                                "id": "487178c2-349e-57f9-bbaf-48dcbdc1f68b",
+                                "label": "Credentials",
+                                "options": {
+                                    "openInNewTab": false,
+                                    "useCurrentDateRange": true,
+                                    "useCurrentFilters": false
+                                },
+                                "order": 3,
+                                "type": "dashboardLink"
+                            }
+                        ]
+                    },
+                    "enhancements": {},
+                    "hidePanelTitles": true
+                },
+                "gridData": {
+                    "h": 4,
+                    "i": "6c634fa5-e347-5211-87e4-a9a7bed5be1b",
+                    "w": 20,
+                    "x": 0,
+                    "y": 0
+                },
+                "panelIndex": "6c634fa5-e347-5211-87e4-a9a7bed5be1b",
+                "title": "",
+                "type": "links"
+            },
+            {
+                "embeddableConfig": {
+                    "enhancements": {
+                        "dynamicActions": {
+                            "events": []
+                        }
+                    },
+                    "hidePanelTitles": true,
+                    "savedVis": {
+                        "data": {
+                            "aggs": [],
+                            "searchSource": {
+                                "filter": [],
+                                "query": {
+                                    "language": "kuery",
+                                    "query": ""
+                                }
+                            }
+                        },
+                        "description": "",
+                        "params": {
+                            "fontSize": 11,
+                            "markdown": "Active malware indicators from the Intel 471 Indicators API, one row each; expired and revoked ones are removed automatically. The time picker filters on when an indicator was last seen. Find an indicator with the **Indicator** control, or type any value (including an MD5 or SHA-1 hash) in the search bar, in quotes. Expand a row to see the whole indicator.",
+                            "openLinksInNewTab": false
+                        },
+                        "title": "",
+                        "type": "markdown",
+                        "uiState": {}
+                    }
+                },
+                "gridData": {
+                    "h": 4,
+                    "i": "a37f9138-d8cd-54c3-ba53-6b65dfd2c596",
+                    "w": 28,
+                    "x": 20,
+                    "y": 0
+                },
+                "panelIndex": "a37f9138-d8cd-54c3-ba53-6b65dfd2c596",
+                "type": "visualization"
+            },
+            {
+                "embeddableConfig": {
+                    "attributes": {
+                        "references": [],
+                        "state": {
+                            "adHocDataViews": {
+                                "41ba7f5a8c2b8516e0e6b0e33c284c93c3469a743fbf7235477fba1119adf93f": {
+                                    "allowHidden": false,
+                                    "allowNoIndex": false,
+                                    "fieldFormats": {},
+                                    "id": "41ba7f5a8c2b8516e0e6b0e33c284c93c3469a743fbf7235477fba1119adf93f",
+                                    "name": "logs-ti_intel471_latest.indicator",
+                                    "runtimeFieldMap": {},
+                                    "sourceFilters": [],
+                                    "timeFieldName": "@timestamp",
+                                    "title": "logs-ti_intel471_latest.indicator",
+                                    "type": "esql"
+                                }
+                            },
+                            "datasourceStates": {
+                                "textBased": {
+                                    "indexPatternRefs": [
+                                        {
+                                            "id": "41ba7f5a8c2b8516e0e6b0e33c284c93c3469a743fbf7235477fba1119adf93f",
+                                            "timeField": "@timestamp",
+                                            "title": "logs-ti_intel471_latest.indicator"
+                                        }
+                                    ],
+                                    "layers": {
+                                        "60450b6f-3cd7-5027-a7e8-0f9c16a0cfa4": {
+                                            "columns": [
+                                                {
+                                                    "columnId": "Last seen",
+                                                    "customLabel": false,
+                                                    "fieldName": "Last seen",
+                                                    "label": "Last seen",
+                                                    "meta": {
+                                                        "type": "date"
+                                                    }
+                                                },
+                                                {
+                                                    "columnId": "Indicators",
+                                                    "customLabel": false,
+                                                    "fieldName": "Indicators",
+                                                    "inMetricDimension": true,
+                                                    "label": "Indicators",
+                                                    "meta": {
+                                                        "type": "number"
+                                                    }
+                                                }
+                                            ],
+                                            "index": "41ba7f5a8c2b8516e0e6b0e33c284c93c3469a743fbf7235477fba1119adf93f",
+                                            "query": {
+                                                "esql": "FROM logs-ti_intel471_latest.indicator\n| STATS Indicators = COUNT(*) BY `Last seen` = BUCKET(@timestamp, 60, ?_tstart, ?_tend)"
+                                            },
+                                            "timeField": "@timestamp"
+                                        }
+                                    }
+                                }
+                            },
+                            "filters": [],
+                            "internalReferences": [],
+                            "needsRefresh": false,
+                            "query": {
+                                "esql": "FROM logs-ti_intel471_latest.indicator\n| STATS Indicators = COUNT(*) BY `Last seen` = BUCKET(@timestamp, 60, ?_tstart, ?_tend)"
+                            },
+                            "visualization": {
+                                "axisTitlesVisibilitySettings": {
+                                    "x": false,
+                                    "yLeft": false,
+                                    "yRight": false
+                                },
+                                "layers": [
+                                    {
+                                        "accessors": [
+                                            "Indicators"
+                                        ],
+                                        "layerId": "60450b6f-3cd7-5027-a7e8-0f9c16a0cfa4",
+                                        "layerType": "data",
+                                        "seriesType": "bar",
+                                        "xAccessor": "Last seen"
+                                    }
+                                ],
+                                "legend": {
+                                    "isVisible": false,
+                                    "position": "right"
+                                },
+                                "preferredSeriesType": "bar",
+                                "valueLabels": "hide"
+                            }
+                        },
+                        "title": "Active indicators by last seen",
+                        "type": "lens",
+                        "visualizationType": "lnsXY"
+                    },
+                    "enhancements": {
+                        "dynamicActions": {
+                            "events": []
+                        }
+                    },
+                    "filters": [],
+                    "query": {
+                        "esql": "FROM logs-ti_intel471_latest.indicator\n| STATS Indicators = COUNT(*) BY `Last seen` = BUCKET(@timestamp, 60, ?_tstart, ?_tend)"
+                    },
+                    "syncColors": false,
+                    "syncCursor": true,
+                    "syncTooltips": false
+                },
+                "gridData": {
+                    "h": 12,
+                    "i": "e220f4cb-e27e-5145-9836-9239e277afdb",
+                    "w": 48,
+                    "x": 0,
+                    "y": 4
+                },
+                "panelIndex": "e220f4cb-e27e-5145-9836-9239e277afdb",
+                "title": "Active indicators by last seen",
+                "type": "lens"
+            },
+            {
+                "embeddableConfig": {
+                    "description": "",
+                    "enhancements": {
+                        "dynamicActions": {
+                            "events": []
+                        }
+                    }
+                },
+                "gridData": {
+                    "h": 24,
+                    "i": "0cf23774-1157-5996-a733-a534b4ce8f73",
+                    "w": 48,
+                    "x": 0,
+                    "y": 16
+                },
+                "panelIndex": "0cf23774-1157-5996-a733-a534b4ce8f73",
+                "panelRefName": "panel_0cf23774-1157-5996-a733-a534b4ce8f73",
+                "title": "Active indicators",
+                "type": "search"
+            }
+        ],
+        "refreshInterval": {
+            "pause": true,
+            "value": 60000
+        },
+        "timeFrom": "now-30d",
+        "timeRestore": true,
+        "timeTo": "now",
+        "title": "[Logs Intel 471] Indicators",
+        "version": 1
+    },
+    "coreMigrationVersion": "8.8.0",
+    "created_at": "2026-11-20T12:47:34.725Z",
+    "id": "ti_intel471-indicators",
+    "references": [
+        {
+            "id": "ti_intel471-overview",
+            "name": "6c634fa5-e347-5211-87e4-a9a7bed5be1b:link_a31ada39-1c6b-5140-ac71-fc4d63afc28c_dashboard",
+            "type": "dashboard"
+        },
+        {
+            "id": "ti_intel471-indicators",
+            "name": "6c634fa5-e347-5211-87e4-a9a7bed5be1b:link_fbea65a7-189e-5158-9522-609e0f5ea11c_dashboard",
+            "type": "dashboard"
+        },
+        {
+            "id": "ti_intel471-vulnerabilities",
+            "name": "6c634fa5-e347-5211-87e4-a9a7bed5be1b:link_63742144-1136-514b-af0b-4f58fe4fa049_dashboard",
+            "type": "dashboard"
+        },
+        {
+            "id": "ti_intel471-credentials",
+            "name": "6c634fa5-e347-5211-87e4-a9a7bed5be1b:link_487178c2-349e-57f9-bbaf-48dcbdc1f68b_dashboard",
+            "type": "dashboard"
+        },
+        {
+            "id": "ti_intel471-active-indicators",
+            "name": "0cf23774-1157-5996-a733-a534b4ce8f73:panel_0cf23774-1157-5996-a733-a534b4ce8f73",
+            "type": "search"
+        },
+        {
+            "id": "logs-*",
+            "name": "controlGroup_c42625e2-7d54-579e-89f4-64f741439539:optionsListDataView",
+            "type": "index-pattern"
+        },
+        {
+            "id": "logs-*",
+            "name": "controlGroup_50e49237-757d-585e-85ab-72600b96f43e:optionsListDataView",
+            "type": "index-pattern"
+        },
+        {
+            "id": "logs-*",
+            "name": "controlGroup_616d167a-9d2b-5e2e-8f7e-ddfd2e2d9074:optionsListDataView",
+            "type": "index-pattern"
+        },
+        {
+            "id": "logs-*",
+            "name": "controlGroup_efacda91-8581-560f-815f-220499222304:optionsListDataView",
+            "type": "index-pattern"
+        },
+        {
+            "id": "logs-*",
+            "name": "kibanaSavedObjectMeta.searchSourceJSON.filter[0].meta.index",
+            "type": "index-pattern"
+        }
+    ],
+    "type": "dashboard",
+    "typeMigrationVersion": "10.3.0"
+}

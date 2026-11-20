@@ -1,0 +1,101 @@
+{
+    "attributes": {
+        "columns": [
+            "intel471.indicator.type",
+            "threat.indicator.name",
+            "threat.software.name",
+            "threat.indicator.confidence",
+            "threat.tactic.name",
+            "intel471.indicator.ioc_expired_at"
+        ],
+        "description": "",
+        "grid": {},
+        "hideChart": true,
+        "isTextBasedQuery": false,
+        "kibanaSavedObjectMeta": {
+            "searchSourceJSON": {
+                "filter": [
+                    {
+                        "$state": {
+                            "store": "appState"
+                        },
+                        "meta": {
+                            "alias": null,
+                            "disabled": false,
+                            "field": "data_stream.dataset",
+                            "indexRefName": "kibanaSavedObjectMeta.searchSourceJSON.filter[0].meta.index",
+                            "key": "data_stream.dataset",
+                            "negate": false,
+                            "params": {
+                                "query": "ti_intel471.indicator"
+                            },
+                            "type": "phrase"
+                        },
+                        "query": {
+                            "match_phrase": {
+                                "data_stream.dataset": "ti_intel471.indicator"
+                            }
+                        }
+                    },
+                    {
+                        "$state": {
+                            "store": "appState"
+                        },
+                        "meta": {
+                            "alias": null,
+                            "disabled": false,
+                            "field": "labels.is_ioc_transform_source",
+                            "indexRefName": "kibanaSavedObjectMeta.searchSourceJSON.filter[1].meta.index",
+                            "key": "labels.is_ioc_transform_source",
+                            "negate": false,
+                            "params": {
+                                "query": "false"
+                            },
+                            "type": "phrase"
+                        },
+                        "query": {
+                            "match_phrase": {
+                                "labels.is_ioc_transform_source": "false"
+                            }
+                        }
+                    }
+                ],
+                "indexRefName": "kibanaSavedObjectMeta.searchSourceJSON.index",
+                "query": {
+                    "language": "kuery",
+                    "query": ""
+                }
+            }
+        },
+        "sort": [
+            [
+                "@timestamp",
+                "desc"
+            ]
+        ],
+        "timeRestore": false,
+        "title": "[Logs Intel 471] Active indicators"
+    },
+    "coreMigrationVersion": "8.8.0",
+    "created_at": "2026-11-20T12:47:34.725Z",
+    "id": "ti_intel471-active-indicators",
+    "references": [
+        {
+            "id": "logs-*",
+            "name": "kibanaSavedObjectMeta.searchSourceJSON.index",
+            "type": "index-pattern"
+        },
+        {
+            "id": "logs-*",
+            "name": "kibanaSavedObjectMeta.searchSourceJSON.filter[0].meta.index",
+            "type": "index-pattern"
+        },
+        {
+            "id": "logs-*",
+            "name": "kibanaSavedObjectMeta.searchSourceJSON.filter[1].meta.index",
+            "type": "index-pattern"
+        }
+    ],
+    "type": "search",
+    "typeMigrationVersion": "10.5.0"
+}

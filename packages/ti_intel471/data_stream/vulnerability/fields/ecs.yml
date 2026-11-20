@@ -1,0 +1,4 @@
+# Mapped statically so the dashboards' error panel works before the first
+# collection error. Other ECS fields are mapped by the ECS dynamic templates.
+- name: error.message
+  external: ecs

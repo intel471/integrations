@@ -1,0 +1,6 @@
+errors:
+  exclude_checks:
+    # The Overview dashboard spans every data stream and the agent's input
+    # metrics, so it can't have a single data_stream.dataset filter. The
+    # per-stream dashboards do have one.
+    - SVR00002 # Mandatory filters in dashboards.

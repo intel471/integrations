@@ -2,3 +2,11 @@
 # detection rules that use it as the timestamp override.
 - name: event.ingested
   external: ecs
+# Used by the dashboards' ES|QL panels, which fail on a field the index
+# doesn't map yet.
+- name: user.email
+  external: ecs
+- name: user.name
+  external: ecs
+- name: url.domain
+  external: ecs

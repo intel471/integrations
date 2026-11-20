@@ -12,6 +12,7 @@ test_ioc_lifecycle.py      live check: expired/revoked IOCs leave the latest ind
 get_indicators_fixture.py       pulls a redacted indicator sample from the real API
 get_vulnerabilities_fixture.py  pulls a redacted vulnerability report sample
 get_credentials_fixture.py      pulls a redacted credential sample (no personal data)
+gen_dashboards.py          dashboards (ES|QL panels, saved searches) -> test queries, import into Kibana
 indicators_fixtures.json        the indicator sample (sensitive values replaced)
 vulnerabilities_fixtures.json   the report sample (identifying values replaced)
 credentials_fixtures.json       the credential sample (personal values replaced;
@@ -29,6 +30,8 @@ data_stream/indicator/, data_stream/vulnerability/, data_stream/credential/
 elasticsearch/transform/latest_ioc/            one doc per indicator, expiry handling
 elasticsearch/transform/latest_vulnerability/  one doc per vulnerability report
 elasticsearch/transform/latest_credential/     one doc per credential
+kibana/dashboard/                              overview + one dashboard per data stream (made by gen_dashboards.py)
+kibana/search/                                 the saved searches the stream dashboards embed
 _dev/deploy/docker/            mock Intel 471 API (both streams) for the system tests
 ```
 
